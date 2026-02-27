@@ -1,0 +1,274 @@
+# CoreX AI Infrastructure Console（MVP→Pro）开发总说明（给 Replit / Claude Code）
+
+你是资深全栈架构师 + UI 工程负责人。请在一个新项目中实现一个“AI 基础设施企业级控制台”：
+- 功能：GPU 资源资产管理、集群监控、租赁订单、Batch Job 调度、Endpoint 推理服务、用量计量与账单、SLA/告警/工单、回放演示模式
+- 特点：支持真实数据接入的架构，但当前先用“自洽模拟数据”驱动 UI 与业务闭环，让演示像真的一样。
+- 风格：高科技感（深色、玻璃拟态、细线网格、微动效），类似 cloud provider 控制台（AWS/GCP/Datadog/Linear 质感融合）。
+- 技术栈：Vite + React + Tailwind + Supabase(Postgres/Auth/RLS/Realtime) + Edge Functions（或 Node API）+ 队列（先用 Postgres outbox/cron，后续可换 Redis/NATS）。
+
+---
+
+## 0. 交付物（必须产出）
+1) 可运行的 Web 控制台（含登录、多租户、RBAC）
+2) 完整 DB schema（SQL 或迁移）
+3) API 规范（REST）+ 可用 Postman/Thunder Client 集合（可选）
+4) 模拟器服务（Scenario Engine）自动生成：指标/任务/故障/账单数据（自洽）
+5) Demo 模式（回放）：选择某天/某场景，按时间轴播放“订单涌入→调度→告警→扩容→恢复→结算”
+6) README：本地启动、Supabase 配置、如何切换模拟/真实
+
+---
+
+## 1) 信息架构（页面与模块）
+### 1.1 导航（左侧 Sidebar）
+- Overview（总览）
+- Data Centers（机房）
+- Clusters（集群）
+- Nodes（服务器）
+- GPUs（卡资产）
+- Scheduler（调度）
+  - Jobs（Batch 任务）
+  - Queues（队列/优先级）
+  - Policies（策略/配额）
+- Endpoints（推理服务）
+- Customers / Tenants（客户/租户）
+- Usage & Billing（用量与账单）
+- SLA & Alerts（SLA/告警）
+- Incidents（故障/工单）
+- Replay（回放演示）
+- Settings（设置：API Keys、RBAC、Webhooks、品牌）
+
+### 1.2 Overview（总览）必须包含的“高端感卡片”
+- Total GPUs / Available GPUs / Utilization（实时）
+- Revenue（今日/本周/本月） + MRR
+- Active Jobs / Queue Wait Time
+- Active Endpoints / RPS / Latency(P50/P95)
+- Health Score（0-100）
+- Regions Map（机房分布）
+- “What’s happening now” 时间线（任务启动、告警、扩容、工单）
+
+---
+
+## 2) 业务闭环（必须讲得通）
+你需要支持两条“赚钱路径”，并且 UI 里能看到完整链路：
+
+### 2.1 GPU 租赁（Leasing）
+订单（Lease Order）→ 分配资源（Allocation）→ 运行（Session）→ 用量计量（Metering）→ 计价（Rating）→ 账单（Invoice）→ 支付状态（Payment）
+
+计费口径（MVP）：
+- 按 GPU-second 计费（不同 GPU 型号不同价格）
+- 支持最低计费单位：minute
+- 支持折扣：长期租赁/大客户
+
+### 2.2 Endpoint 推理（Inference Endpoint）
+创建 Endpoint（选择 GPU 型号/地区/镜像/模型）→ 运行服务 → 请求统计（RPS/Token/Latency）→ Autoscale（可选，MVP 可先模拟）→ 用量计费（按 GPU-time + 请求量）
+
+计费口径（MVP）：
+- Endpoint 保底费用（每小时）
+- 超额：按请求量或 GPU-time 增量
+
+---
+
+## 3) 数据“自洽模拟器”（关键：看起来像真的）
+### 3.1 Simulator 目标
+生成三类流：Metrics、Events、Billing，并保证因果关系一致：
+- 利用率↑ => 功耗↑ 温度↑
+- 故障发生 => 可用 GPU↓ 排队↑ SLA 告警↑ 收入波动
+- 扩容/上新 => 容量↑ 排队↓ 收入↑（同时成本↑）
+
+### 3.2 Simulator 场景（内置 6 个）
+1) Normal Day（平稳）
+2) Marketing Spike（订单峰值）
+3) GPU Failure（节点掉线 + ECC 错误）
+4) Region Congestion（某机房网络拥塞导致 latency 飙升）
+5) Big Customer Onboarding（大客户入驻，MRR 上升）
+6) Auto-Scale Story（Endpoint 触发扩缩容，latency 回落）
+
+### 3.3 Replay（回放）
+- 选择日期/场景 -> 前端按时间轴请求 /replay/events?from&to
+- UI 展示：时间线 + 图表同步滚动 + 关键节点高亮（比如“新增 128x H100”）
+
+---
+
+## 4) 数据库设计（Supabase Postgres + RLS）
+### 4.1 多租户
+- tenants：租户/客户
+- users：用户（Supabase Auth）
+- memberships：用户-租户关系
+- roles / permissions：RBAC（可简化为 role 字段 + policy）
+
+### 4.2 资产模型（Inventory）
+- data_centers(id, name, region, city, status, health_score)
+- clusters(id, data_center_id, name, scheduler_type, status)
+- nodes(id, cluster_id, hostname, cpu, ram_gb, storage_gb, net_gbps, status, last_seen_at)
+- gpus(id, node_id, model, vram_gb, mig_capable, serial, status, temp_c, power_w, utilization_pct, mem_used_gb)
+
+> gpus 表里 temp/power/utilization 允许被模拟器持续写入（或写入 metrics 表）
+
+### 4.3 监控指标（两种方式：选一）
+A) 简化：gpu_metrics(timeseries)
+- gpu_metrics(id, gpu_id, ts, utilization, mem_used_gb, temp_c, power_w, ecc_errors, nvlink_tx, nvlink_rx)
+- node_metrics(id, node_id, ts, cpu_pct, ram_pct, net_in, net_out)
+
+B) 更像专业：metrics_points
+- metrics_points(id, subject_type, subject_id, metric_name, ts, value, tags jsonb)
+
+MVP 推荐 A（简单稳定）
+
+### 4.4 调度与任务
+- queues(id, tenant_id, name, priority, quota_gpu)
+- jobs(id, tenant_id, queue_id, type, status, requested_gpu_model, requested_gpus, requested_vram_gb, region_pref, image, command, created_at, started_at, finished_at)
+- allocations(id, job_id, node_id, gpu_ids uuid[], status, allocated_at, released_at)
+- job_events(id, job_id, ts, level, message, trace_id)
+
+### 4.5 Endpoint 推理
+- endpoints(id, tenant_id, name, region, gpu_model, gpus, status, url, created_at)
+- endpoint_metrics(id, endpoint_id, ts, rps, latency_p50, latency_p95, error_rate, tokens_in, tokens_out)
+- endpoint_events(id, endpoint_id, ts, level, message)
+
+### 4.6 计量与账单
+- usage_records(id, tenant_id, source_type('job'/'endpoint'), source_id, ts_start, ts_end, gpu_seconds, requests, tokens_in, tokens_out, region, gpu_model)
+- pricing_plans(id, name, currency, rules jsonb)   // rules 定义各 GPU 单价、保底费、折扣
+- invoices(id, tenant_id, period_start, period_end, amount, currency, status, created_at)
+- invoice_items(id, invoice_id, description, quantity, unit_price, amount, meta jsonb)
+
+### 4.7 SLA/告警/故障
+- alerts(id, tenant_id nullable, severity, source_type, source_id, title, status, created_at, resolved_at)
+- incidents(id, title, severity, status, started_at, resolved_at, summary)
+- incident_updates(id, incident_id, ts, message)
+
+### 4.8 API Keys / Webhooks
+- api_keys(id, tenant_id, name, hashed_key, created_at, last_used_at)
+- webhooks(id, tenant_id, url, secret, events text[], status)
+
+---
+
+## 5) RLS 安全策略（必须）
+- 所有 tenant 相关表：tenant_id 必须存在
+- memberships 控制用户可访问的 tenant
+- admin 角色可跨 tenant 查看（用于 superadmin）
+- API Key 访问：走 edge function 校验 key -> 注入 tenant_id
+
+---
+
+## 6) 后端 API 设计（REST，MVP）
+### 6.1 Auth
+- Supabase Auth 登录（Email/OTP 或 password）
+
+### 6.2 Inventory
+- GET /api/overview
+- GET /api/data-centers
+- GET /api/clusters?dc_id=
+- GET /api/nodes?cluster_id=
+- GET /api/gpus?node_id=&status=
+
+### 6.3 Jobs & Scheduler
+- POST /api/jobs (提交任务)
+- GET /api/jobs?status=&tenant_id=
+- GET /api/jobs/:id
+- POST /api/jobs/:id/cancel
+- GET /api/queues
+
+调度器（MVP）：
+- cron 每 10s 扫描 queued jobs
+- 找满足条件的 GPU（状态 healthy + 足够 vram + 区域匹配）
+- 分配策略先做 binpack：优先塞满某 node，提高利用率
+- 写 allocations + 更新 job 状态 running
+- 模拟运行时长（按 job type + requested_gpus），结束后释放资源，生成 usage_records
+
+### 6.4 Endpoints
+- POST /api/endpoints
+- GET /api/endpoints
+- GET /api/endpoints/:id/metrics
+- POST /api/endpoints/:id/scale (MVP 可只改状态并生成 event)
+
+### 6.5 Billing
+- GET /api/usage?from=&to=
+- POST /api/invoices/generate?period=YYYY-MM
+- GET /api/invoices
+
+### 6.6 Alerts / Incidents
+- GET /api/alerts
+- POST /api/alerts/:id/resolve
+- GET /api/incidents
+- POST /api/incidents
+
+### 6.7 Replay
+- GET /api/replay/scenarios
+- POST /api/replay/start (scenario_id, from, to)
+- GET /api/replay/events?from=&to=
+- GET /api/replay/metrics?subject=gpu|endpoint&id=&from=&to=
+
+---
+
+## 7) 前端 UI 规范（必须高级）
+### 7.1 视觉语言
+- 深色底（#0B0F1A 类）+ 玻璃拟态卡片（半透明 + blur）
+- 细网格背景（很淡）+ 渐变光晕（极克制）
+- 字体层级清晰：大数字 KPI（48/36），标题（16/14），辅助（12）
+- 图表：线图/面积图/热力图/条形图 + hover tooltip
+- 动效：页面切换淡入，卡片 hover 微抬升，数字滚动（可选）
+
+### 7.2 页面组件（可复用）
+- KPIStatCard（带趋势）
+- TimeRangePicker（1h/24h/7d/30d/custom）
+- HealthBadge（healthy/degraded/down）
+- EventsTimeline（带 severity）
+- RegionMap
+- DataTable（支持筛选、列显隐、分页）
+
+### 7.3 图表建议
+- GPU：utilization / temp / power 三线叠加
+- Cluster：capacity vs allocated
+- Billing：MRR 曲线 + 收入分解（jobs vs endpoints）
+- Endpoint：RPS 与 latency（双轴也可以）
+
+---
+
+## 8) MVP 里“看起来很强”的细节（务必做）
+1) 全局 Search（Cmd+K）能搜：tenant/job/endpoint/gpu
+2) 每个 Job / Endpoint 都有 “Trace ID / Events” 面板（即使是模拟也要有）
+3) 每个告警点进去能看到：影响范围、开始/恢复时间、关联工单
+4) Overview 上有 “Live activity feed” 不断滚动（模拟器驱动）
+
+---
+
+## 9) 实施步骤（按 Sprint）
+### Sprint 1（基础控制台 + 模拟指标）
+- Supabase 初始化 + Auth + 多租户 + RBAC
+- Inventory 四层模型 + 列表页
+- Simulator v1：写入 gpus 表实时字段 + gpu_metrics
+- Overview 看板 + 活动时间线
+
+### Sprint 2（Jobs 调度闭环 + 计量）
+- Jobs/Queues + cron 调度器
+- allocations 资源占用/释放
+- usage_records 自动生成
+- Jobs 详情页（events/logs/trace）
+
+### Sprint 3（Endpoints + Billing + Replay）
+- Endpoints CRUD + endpoint_metrics 模拟
+- Invoices 生成（按 pricing_rules）
+- Replay 场景 + 时间轴回放
+
+---
+
+## 10) 工程要求
+- 所有业务常量写在 /src/config
+- 所有 mock/simulator 写在 /apps/simulator 或 /supabase/functions/simulator
+- 所有 API 层统一封装（axios/fetch）
+- DB migration 版本化
+- README 给出：如何切换 DEMO_MODE=true/false
+
+---
+
+## 11) 你现在立刻要开始做的（第一步）
+请先输出：
+A) 项目目录结构
+B) Supabase 表结构 SQL（按上面）
+C) 3 个核心页面的 UI 草图（文字结构即可）：Overview / GPUs / Jobs
+D) Simulator v1 的伪代码（如何每 5s 更新指标 + 生成事件）
+E) 关键 API 路由列表（含参数）
+
+完成后再开始写代码。
+
+（注意：不要省略“高级感 UI 规范”与“Replay 模式”。这是演示的灵魂。）
