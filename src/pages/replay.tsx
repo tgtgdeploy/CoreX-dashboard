@@ -10,6 +10,7 @@ import { Slider } from "@/components/ui/slider";
 import { Play, Pause, RotateCcw, FastForward, Film, Clock, Zap, Activity } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { cn } from "@/lib/utils";
+import { supabaseHeaders } from "@/lib/queryClient";
 
 export default function Replay() {
   const queryClient = useQueryClient();
@@ -26,7 +27,7 @@ export default function Replay() {
 
   const { data: events = [] } = useQuery<ReplayEvent[]>({
     queryKey: ["/api/replay/events", elapsed],
-    queryFn: () => fetch(`/api/replay/events?from=0&to=${elapsed}`).then(r => r.json()),
+    queryFn: () => fetch(`/api/replay/events?from=0&to=${elapsed}`, { headers: supabaseHeaders }).then(r => r.json()),
     enabled: !!activeScenario,
     refetchInterval: playing ? 2000 : false,
   });
@@ -38,7 +39,7 @@ export default function Replay() {
     latency: MetricPoint[];
   }>({
     queryKey: ["/api/replay/metrics", elapsed],
-    queryFn: () => fetch(`/api/replay/metrics`).then(r => r.json()),
+    queryFn: () => fetch(`/api/replay/metrics`, { headers: supabaseHeaders }).then(r => r.json()),
     enabled: !!activeScenario,
     refetchInterval: playing ? 3000 : false,
   });
@@ -46,7 +47,7 @@ export default function Replay() {
   const startMutation = useMutation({
     mutationFn: (id: string) => fetch(`/api/replay/start`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { ...supabaseHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ scenarioId: id }),
     }).then(r => r.json()),
     onSuccess: (_, id) => {

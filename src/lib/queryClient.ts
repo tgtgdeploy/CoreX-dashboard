@@ -24,7 +24,7 @@ export async function apiRequest(
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
-const supabaseHeaders: Record<string, string> = {};
+export const supabaseHeaders: Record<string, string> = {};
 const anonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY;
 if (anonKey) {
   supabaseHeaders["apikey"] = anonKey;
