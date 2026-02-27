@@ -1,9 +1,23 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import fs from "fs";
+
+// Cloudflare Pages SPA: copy index.html → 404.html so unknown paths get the SPA shell
+function spa404Plugin(): Plugin {
+  return {
+    name: "spa-404",
+    closeBundle() {
+      const out = path.resolve(import.meta.dirname, "dist");
+      const src = path.join(out, "index.html");
+      const dest = path.join(out, "404.html");
+      if (fs.existsSync(src)) fs.copyFileSync(src, dest);
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), spa404Plugin()],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "src"),
