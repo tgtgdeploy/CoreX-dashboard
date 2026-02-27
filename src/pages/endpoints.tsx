@@ -6,14 +6,14 @@ import { HealthBadge } from "@/components/health-badge";
 import { Card } from "@/components/ui/card";
 import { Globe, Activity, Clock, Zap } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
-import { supabaseHeaders } from "@/lib/queryClient";
+import { supabaseHeaders, apiBase } from "@/lib/queryClient";
 
 export default function Endpoints() {
   const { data = [] } = useQuery<Endpoint[]>({ queryKey: ["/api/endpoints"], refetchInterval: 5000 });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { data: metrics } = useQuery<EndpointMetric[]>({
     queryKey: ["/api/endpoints", selectedId, "metrics"],
-    queryFn: () => fetch(`/api/endpoints/${selectedId}/metrics`, { headers: supabaseHeaders }).then(r => r.json()),
+    queryFn: () => fetch(`${apiBase}/api/endpoints/${selectedId}/metrics`, { headers: supabaseHeaders }).then(r => r.json()),
     enabled: !!selectedId,
     refetchInterval: 15000,
   });

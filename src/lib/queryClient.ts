@@ -24,8 +24,16 @@ export async function apiRequest(
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
+
+// In dev, Vite proxy handles /api → Supabase. In production, call Supabase directly.
+const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL || "";
+const anonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || "";
+const isDev = (import.meta as any).env?.DEV;
+// Production base: https://xxx.supabase.co/functions/v1
+// Dev base: "" (Vite proxy handles it)
+export const apiBase = isDev ? "" : (supabaseUrl ? `${supabaseUrl}/functions/v1` : "");
+
 export const supabaseHeaders: Record<string, string> = {};
-const anonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY;
 if (anonKey) {
   supabaseHeaders["apikey"] = anonKey;
   supabaseHeaders["Authorization"] = `Bearer ${anonKey}`;
@@ -36,7 +44,9 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
+    const path = queryKey.join("/") as string;
+    const url = `${apiBase}${path}`;
+    const res = await fetch(url, {
       credentials: "include",
       headers: supabaseHeaders,
     });

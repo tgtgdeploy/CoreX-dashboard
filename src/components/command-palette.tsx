@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Building2, Cpu, Globe, Zap, Bell, AlertOctagon, Search } from "lucide-react";
 import type { SearchResult } from "@shared/schema";
-import { supabaseHeaders } from "@/lib/queryClient";
+import { supabaseHeaders, apiBase } from "@/lib/queryClient";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Building2, Cpu, Globe, Zap, Bell, AlertOctagon,
@@ -30,7 +30,7 @@ export function CommandPalette() {
     setQuery(q);
     if (q.length < 2) { setResults([]); return; }
     try {
-      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`, { headers: supabaseHeaders });
+      const res = await fetch(`${apiBase}/api/search?q=${encodeURIComponent(q)}`, { headers: supabaseHeaders });
       const data = await res.json();
       setResults(data);
     } catch { setResults([]); }
