@@ -2,12 +2,13 @@ import { useLocation, Link } from "wouter";
 import {
   LayoutDashboard, Server, Network, HardDrive, Cpu, CalendarClock,
   ListTodo, Layers, ShieldCheck, Globe, Building2, CreditCard,
-  Bell, AlertOctagon, Play, Settings, ChevronRight, ChevronDown
+  Bell, AlertOctagon, Play, Settings, ChevronRight, ChevronDown,
+  Activity, Terminal
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup,
   SidebarGroupContent, SidebarGroupLabel, SidebarMenu,
-  SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton,
+  SidebarMenuItem, SidebarMenuSub, SidebarMenuSubItem,
   SidebarHeader, SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
@@ -63,6 +64,13 @@ const navSections: { label: string; items: NavItem[] }[] = [
     ],
   },
   {
+    label: "Observability",
+    items: [
+      { title: "Monitoring", url: "/monitoring", icon: Activity },
+      { title: "Console", url: "/console", icon: Terminal },
+    ],
+  },
+  {
     label: "Operations",
     items: [
       { title: "Alerts", url: "/alerts", icon: Bell },
@@ -101,21 +109,27 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="p-3 sm:p-4 border-b border-sidebar-border">
+      <SidebarHeader className="p-4 border-b border-sidebar-border">
         <Link href="/">
-          <div className="flex items-center gap-2.5">
-            <img src={logoSrc} alt="CoreX" className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-cover" />
+          <div className="flex items-center gap-3 group/logo">
+            <div className="relative">
+              <img src={logoSrc} alt="CoreX" className="w-9 h-9 rounded-xl object-cover ring-2 ring-primary/20 transition-all duration-300 group-hover/logo:ring-primary/40 group-hover/logo:scale-105" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-status-online ring-2 ring-sidebar" />
+            </div>
             <div className="min-w-0">
-              <h1 className="font-display text-base sm:text-lg font-bold tracking-tight leading-none">CoreX</h1>
-              <p className="text-[9px] sm:text-[10px] text-muted-foreground font-mono uppercase tracking-widest mt-0.5">Infrastructure</p>
+              <h1 className="font-display text-base font-bold tracking-tight leading-none bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">CoreX</h1>
+              <p className="text-[9px] text-muted-foreground font-mono uppercase tracking-[0.2em] mt-0.5">Infrastructure</p>
             </div>
           </div>
         </Link>
       </SidebarHeader>
-      <SidebarContent className="pt-1 overflow-y-auto">
+
+      <SidebarContent className="pt-2 overflow-y-auto sidebar-scroll">
         {navSections.map(section => (
-          <SidebarGroup key={section.label} className="py-1">
-            <SidebarGroupLabel className="text-[10px] px-3 py-1">{section.label}</SidebarGroupLabel>
+          <SidebarGroup key={section.label} className="py-0.5 px-2">
+            <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 px-3 py-1.5 mb-0.5">
+              {section.label}
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {section.items.map(item => {
@@ -126,24 +140,56 @@ export function AppSidebar() {
                       <Collapsible key={item.title} open={isExpanded || childActive}>
                         <SidebarMenuItem>
                           <CollapsibleTrigger asChild>
-                            <SidebarMenuButton onClick={() => toggleMenu(item.title)} data-active={childActive}>
-                              <item.icon className="w-4 h-4" />
-                              <span className="flex-1 text-sm">{item.title}</span>
-                              <ChevronDown className={`w-3 h-3 transition-transform ${isExpanded || childActive ? "rotate-0" : "-rotate-90"}`} />
-                            </SidebarMenuButton>
+                            <button
+                              onClick={() => toggleMenu(item.title)}
+                              className={`
+                                nav-btn group/nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm
+                                transition-all duration-200 ease-out relative overflow-hidden
+                                ${childActive
+                                  ? "bg-primary/10 text-primary font-medium"
+                                  : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/60"
+                                }
+                              `}
+                            >
+                              {childActive && (
+                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary transition-all duration-300" />
+                              )}
+                              <div className={`
+                                flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-200
+                                ${childActive
+                                  ? "bg-primary/15 text-primary"
+                                  : "text-muted-foreground group-hover/nav-btn:text-sidebar-foreground group-hover/nav-btn:bg-sidebar-accent/80"
+                                }
+                              `}>
+                                <item.icon className="w-[15px] h-[15px]" />
+                              </div>
+                              <span className="flex-1 text-left">{item.title}</span>
+                              <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-300 ease-out ${isExpanded || childActive ? "rotate-0" : "-rotate-90"}`} />
+                            </button>
                           </CollapsibleTrigger>
-                          <CollapsibleContent>
+                          <CollapsibleContent className="animate-collapsible">
                             <SidebarMenuSub>
-                              {item.children.map(child => (
-                                <SidebarMenuSubItem key={child.url}>
-                                  <SidebarMenuSubButton asChild data-active={isActive(child.url)}>
+                              {item.children.map(child => {
+                                const active = isActive(child.url);
+                                return (
+                                  <SidebarMenuSubItem key={child.url}>
                                     <Link href={child.url}>
-                                      <span className="text-sm">{child.title}</span>
-                                      {isActive(child.url) && <ChevronRight className="w-3 h-3 ml-auto text-muted-foreground" />}
+                                      <div className={`
+                                        flex items-center gap-2.5 px-3 py-1.5 rounded-md text-sm
+                                        transition-all duration-200 ease-out cursor-pointer
+                                        ${active
+                                          ? "text-primary font-medium bg-primary/5"
+                                          : "text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/40"
+                                        }
+                                      `}>
+                                        <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${active ? "bg-primary scale-110" : "bg-muted-foreground/30"}`} />
+                                        <span>{child.title}</span>
+                                        {active && <ChevronRight className="w-3 h-3 ml-auto text-primary/60" />}
+                                      </div>
                                     </Link>
-                                  </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
-                              ))}
+                                  </SidebarMenuSubItem>
+                                );
+                              })}
                             </SidebarMenuSub>
                           </CollapsibleContent>
                         </SidebarMenuItem>
@@ -155,18 +201,41 @@ export function AppSidebar() {
                   const showBadge = item.title === "Alerts" && criticalAlerts > 0;
                   return (
                     <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild data-active={active}>
-                        <Link href={item.url}>
-                          <item.icon className="w-4 h-4" />
-                          <span className="flex-1 text-sm">{item.title}</span>
-                          {showBadge && (
-                            <Badge variant="destructive" className="text-[10px] px-1.5 py-0 min-w-5 flex items-center justify-center">
-                              {criticalAlerts}
-                            </Badge>
+                      <Link href={item.url}>
+                        <div
+                          className={`
+                            nav-btn group/nav-btn flex items-center gap-3 px-3 py-2 rounded-lg text-sm
+                            transition-all duration-200 ease-out relative overflow-hidden cursor-pointer
+                            ${active
+                              ? "bg-primary/10 text-primary font-medium shadow-sm shadow-primary/5"
+                              : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/60"
+                            }
+                          `}
+                        >
+                          {active && (
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-primary transition-all duration-300" />
                           )}
-                          {active && <ChevronRight className="w-3 h-3 text-muted-foreground" />}
-                        </Link>
-                      </SidebarMenuButton>
+                          <div className={`
+                            flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-200
+                            ${active
+                              ? "bg-primary/15 text-primary"
+                              : "text-muted-foreground group-hover/nav-btn:text-sidebar-foreground group-hover/nav-btn:bg-sidebar-accent/80"
+                            }
+                          `}>
+                            <item.icon className="w-[15px] h-[15px]" />
+                          </div>
+                          <span className="flex-1">{item.title}</span>
+                          {showBadge && (
+                            <span className="relative flex items-center justify-center">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-40" />
+                              <Badge variant="destructive" className="relative text-[10px] px-1.5 py-0 min-w-5 flex items-center justify-center font-mono">
+                                {criticalAlerts}
+                              </Badge>
+                            </span>
+                          )}
+                          {active && !showBadge && <ChevronRight className="w-3.5 h-3.5 text-primary/50" />}
+                        </div>
+                      </Link>
                     </SidebarMenuItem>
                   );
                 })}
@@ -175,10 +244,14 @@ export function AppSidebar() {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter className="p-3 sm:p-4 border-t border-sidebar-border">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-status-online animate-pulse" />
-          <span className="text-[10px] sm:text-xs text-muted-foreground font-mono">All Systems Operational</span>
+
+      <SidebarFooter className="p-4 border-t border-sidebar-border">
+        <div className="flex items-center gap-2.5 px-1">
+          <div className="relative flex items-center justify-center">
+            <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 opacity-30" />
+            <div className="relative w-2 h-2 rounded-full bg-status-online" />
+          </div>
+          <span className="text-[11px] text-muted-foreground font-mono tracking-wide">All Systems Operational</span>
         </div>
       </SidebarFooter>
     </Sidebar>

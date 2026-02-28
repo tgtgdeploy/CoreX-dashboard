@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,7 +7,10 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeProvider, useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
-import { Sun, Moon } from "lucide-react";
+import {
+  Sun, Moon, LayoutDashboard, Server, Cpu,
+  Activity, Bell, Search, Command
+} from "lucide-react";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
 import DataCenters from "@/pages/data-centers";
@@ -26,6 +29,8 @@ import Tenants from "@/pages/tenants";
 import Incidents from "@/pages/incidents";
 import Replay from "@/pages/replay";
 import Settings from "@/pages/settings";
+import Console from "@/pages/console";
+import { Link } from "wouter";
 
 function Router() {
   return (
@@ -46,6 +51,7 @@ function Router() {
       <Route path="/alerts" component={Alerts} />
       <Route path="/incidents" component={Incidents} />
       <Route path="/replay" component={Replay} />
+      <Route path="/console" component={Console} />
       <Route path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
@@ -55,15 +61,69 @@ function Router() {
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   return (
-    <Button size="icon" variant="ghost" onClick={toggleTheme} data-testid="button-theme-toggle">
+    <Button
+      size="icon"
+      variant="ghost"
+      onClick={toggleTheme}
+      data-testid="button-theme-toggle"
+      className="h-8 w-8 rounded-lg hover:bg-accent/80 transition-all duration-200"
+    >
       {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
     </Button>
   );
 }
 
+const mobileNavItems = [
+  { icon: LayoutDashboard, label: "Home", url: "/" },
+  { icon: Activity, label: "Monitor", url: "/monitoring" },
+  { icon: Cpu, label: "GPUs", url: "/gpus" },
+  { icon: Server, label: "Infra", url: "/data-centers" },
+  { icon: Bell, label: "Alerts", url: "/alerts" },
+];
+
+function MobileBottomNav() {
+  const [location] = useLocation();
+  const isActive = (url: string) => url === "/" ? location === "/" : location.startsWith(url);
+
+  return (
+    <nav className="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-t border-border/50 safe-area-bottom">
+      <div className="flex items-center justify-around px-2 py-1">
+        {mobileNavItems.map(item => {
+          const active = isActive(item.url);
+          return (
+            <Link key={item.url} href={item.url}>
+              <button className={`
+                flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl min-w-[56px]
+                transition-all duration-200 ease-out active:scale-90
+                ${active
+                  ? "text-primary"
+                  : "text-muted-foreground"
+                }
+              `}>
+                <div className={`
+                  relative flex items-center justify-center w-8 h-8 rounded-xl transition-all duration-300
+                  ${active ? "bg-primary/12" : ""}
+                `}>
+                  <item.icon className={`w-[18px] h-[18px] transition-all duration-200 ${active ? "scale-105" : ""}`} />
+                  {active && (
+                    <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+                  )}
+                </div>
+                <span className={`text-[10px] font-medium tracking-wide transition-all duration-200 ${active ? "text-primary" : ""}`}>
+                  {item.label}
+                </span>
+              </button>
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
 function AppLayout() {
   const style = {
-    "--sidebar-width": "15rem",
+    "--sidebar-width": "15.5rem",
     "--sidebar-width-icon": "3.5rem",
   };
 
@@ -72,25 +132,33 @@ function AppLayout() {
       <div className="flex h-screen w-full">
         <AppSidebar />
         <div className="flex flex-col flex-1 min-w-0">
-          <header className="flex items-center justify-between gap-2 px-4 py-2 border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+          <header className="flex items-center justify-between gap-2 px-3 md:px-4 py-2 border-b border-border/50 bg-background/80 backdrop-blur-xl sticky top-0 z-50">
             <div className="flex items-center gap-2">
-              <SidebarTrigger data-testid="button-sidebar-toggle" />
-              <div className="h-4 w-px bg-border" />
-              <span className="text-xs text-muted-foreground font-mono">v2.4.1</span>
+              <SidebarTrigger data-testid="button-sidebar-toggle" className="h-8 w-8 rounded-lg" />
+              <div className="h-4 w-px bg-border/50 hidden sm:block" />
+              <span className="text-[11px] text-muted-foreground/60 font-mono hidden sm:block">v2.4.1</span>
             </div>
-            <div className="flex items-center gap-1">
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/50 mr-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-status-online" />
-                <span className="text-[11px] text-muted-foreground font-mono">LIVE</span>
+            <div className="flex items-center gap-1.5">
+              <button className="hidden md:flex items-center gap-2 h-8 px-3 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/50 transition-colors text-muted-foreground text-xs">
+                <Search className="w-3.5 h-3.5" />
+                <span className="hidden lg:inline">Search...</span>
+                <kbd className="hidden lg:inline-flex h-5 items-center gap-0.5 rounded border border-border/50 bg-background/80 px-1.5 text-[10px] font-mono text-muted-foreground/60">
+                  <Command className="w-2.5 h-2.5" />K
+                </kbd>
+              </button>
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-500/8 border border-emerald-500/10">
+                <div className="w-1.5 h-1.5 rounded-full bg-status-online glow-online" />
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-medium tracking-wider">LIVE</span>
               </div>
               <ThemeToggle />
             </div>
           </header>
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-auto pb-16 md:pb-0">
             <Router />
           </main>
         </div>
       </div>
+      <MobileBottomNav />
     </SidebarProvider>
   );
 }
