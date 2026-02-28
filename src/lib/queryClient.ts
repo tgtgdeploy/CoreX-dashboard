@@ -14,9 +14,8 @@ export async function apiRequest(
 ): Promise<Response> {
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers: data ? { ...supabaseHeaders, "Content-Type": "application/json" } : supabaseHeaders,
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
   });
 
   await throwIfResNotOk(res);
@@ -47,7 +46,6 @@ export const getQueryFn: <T>(options: {
     const path = queryKey.join("/") as string;
     const url = `${apiBase}${path}`;
     const res = await fetch(url, {
-      credentials: "include",
       headers: supabaseHeaders,
     });
 
