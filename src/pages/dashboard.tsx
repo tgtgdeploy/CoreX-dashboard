@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import type { DashboardData } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -107,7 +108,8 @@ function ChartTooltipContent({ active, payload, label, formatter }: any) {
 }
 
 export default function Dashboard() {
-  useEffect(() => { document.title = "Global Overview | CoreX"; }, []);
+  const { t } = useTranslation();
+  useEffect(() => { document.title = t('dashboard.pageTitle'); }, [t]);
 
   const { data, isLoading } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
@@ -123,13 +125,13 @@ export default function Dashboard() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">All Systems Operational</span>
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">{t('common.allSystemsOperational')}</span>
             </div>
             <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-white" data-testid="text-page-title">
-              Global Overview
+              {t('dashboard.title')}
             </h1>
             <p className="text-sm text-zinc-400 mt-0.5">
-              Real-time GPU infrastructure monitoring
+              {t('dashboard.subtitle')}
             </p>
           </div>
           <Badge variant="outline" className="font-mono text-xs border-zinc-600 text-zinc-300">
@@ -140,42 +142,42 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
         <StatCard
-          title="Total GPUs"
+          title={t('dashboard.totalGpus')}
           value={data ? data.totalGpus.toLocaleString() : "—"}
-          subtitle="across 4 regions"
+          subtitle={t('dashboard.acrossRegions')}
           icon={Cpu}
           color="bg-primary/10 text-primary"
           loading={isLoading}
         />
         <StatCard
-          title="Available"
+          title={t('dashboard.available')}
           value={data ? data.availableGpus.toLocaleString() : "—"}
-          subtitle={data ? `${((data.availableGpus / data.totalGpus) * 100).toFixed(1)}% idle` : ""}
+          subtitle={data ? t('dashboard.idle', { value: ((data.availableGpus / data.totalGpus) * 100).toFixed(1) }) : ""}
           icon={Server}
           color="bg-chart-5/10 text-chart-5"
           loading={isLoading}
         />
         <StatCard
-          title="Utilization"
+          title={t('dashboard.utilization')}
           value={data ? `${data.utilization}%` : "—"}
-          subtitle="avg across fleet"
+          subtitle={t('dashboard.avgAcrossFleet')}
           trend={data?.revenueTrend}
           icon={Activity}
           color="bg-chart-2/10 text-chart-2"
           loading={isLoading}
         />
         <StatCard
-          title="Active Tasks"
+          title={t('dashboard.activeTasks')}
           value={data ? `${data.activeTasks}` : "—"}
-          subtitle={data ? `${data.queuedTasks} queued` : ""}
+          subtitle={data ? t('dashboard.queued', { count: data.queuedTasks }) : ""}
           icon={ListTodo}
           color="bg-chart-4/10 text-chart-4"
           loading={isLoading}
         />
         <StatCard
-          title="Revenue 24h"
+          title={t('dashboard.revenue24h')}
           value={data ? `$${formatNumber(data.revenue24h)}` : "—"}
-          subtitle="vs last period"
+          subtitle={t('dashboard.vsLastPeriod')}
           trend={data?.revenueTrend}
           icon={DollarSign}
           color="bg-chart-1/10 text-chart-1"
@@ -186,11 +188,11 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2 px-4 pt-4">
-            <CardTitle className="text-sm font-medium">GPU Utilization (24h)</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.gpuUtilization24h')}</CardTitle>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <div className="w-2 h-2 rounded-full" style={{ background: CHART_COLORS[0] }} />
-                <span className="text-[10px] text-muted-foreground">Utilization %</span>
+                <span className="text-[10px] text-muted-foreground">{t('dashboard.utilizationPct')}</span>
               </div>
             </div>
           </CardHeader>
@@ -233,7 +235,7 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="px-4 pt-4 pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">GPU Fleet Distribution</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.gpuFleetDistribution')}</CardTitle>
           </CardHeader>
           <CardContent className="px-2 pb-2">
             {isLoading ? (
@@ -284,7 +286,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
-            <CardTitle className="text-sm font-medium">Revenue Trend (7d)</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.revenueTrend7d')}</CardTitle>
             <DollarSign className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent className="px-2 pb-2">
@@ -314,7 +316,7 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
-            <CardTitle className="text-sm font-medium">Regional Performance</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.regionalPerformance')}</CardTitle>
             <Server className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent className="px-2 pb-2">
@@ -346,7 +348,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
-            <CardTitle className="text-sm font-medium">System Health</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.systemHealth')}</CardTitle>
             <Shield className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent className="px-4 pb-4 space-y-3">
@@ -357,34 +359,34 @@ export default function Dashboard() {
             ) : (
               <>
                 <div className="flex items-center justify-between py-2">
-                  <span className="text-sm text-muted-foreground">Health Score</span>
+                  <span className="text-sm text-muted-foreground">{t('dashboard.healthScore')}</span>
                   <span className="text-lg font-mono font-bold text-status-online">{data?.healthScore}%</span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-t">
                   <div className="flex items-center gap-2">
                     <Zap className="w-3.5 h-3.5 text-chart-2" />
-                    <span className="text-sm text-muted-foreground">Power Draw</span>
+                    <span className="text-sm text-muted-foreground">{t('dashboard.powerDraw')}</span>
                   </div>
                   <span className="text-sm font-mono">{data?.totalPowerKw} kW</span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-t">
                   <div className="flex items-center gap-2">
                     <Radio className="w-3.5 h-3.5 text-chart-4" />
-                    <span className="text-sm text-muted-foreground">Active Endpoints</span>
+                    <span className="text-sm text-muted-foreground">{t('dashboard.activeEndpoints')}</span>
                   </div>
                   <span className="text-sm font-mono">{data?.activeEndpoints}</span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-t">
                   <div className="flex items-center gap-2">
                     <Activity className="w-3.5 h-3.5 text-chart-5" />
-                    <span className="text-sm text-muted-foreground">Completed (24h)</span>
+                    <span className="text-sm text-muted-foreground">{t('dashboard.completed24h')}</span>
                   </div>
                   <span className="text-sm font-mono">{data?.completedTasks24h}</span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-t">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="w-3.5 h-3.5 text-status-busy" />
-                    <span className="text-sm text-muted-foreground">Failed (24h)</span>
+                    <span className="text-sm text-muted-foreground">{t('dashboard.failed24h')}</span>
                   </div>
                   <span className="text-sm font-mono text-status-busy">{data?.failedTasks24h}</span>
                 </div>
@@ -395,9 +397,9 @@ export default function Dashboard() {
 
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
-            <CardTitle className="text-sm font-medium">Recent Alerts</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.recentAlerts')}</CardTitle>
             <Badge variant="outline" className="text-[10px] font-mono">
-              {data?.recentAlerts?.length || 0} recent
+              {data?.recentAlerts?.length || 0} {t('common.recent')}
             </Badge>
           </CardHeader>
           <CardContent className="px-4 pb-4">
@@ -445,7 +447,7 @@ export default function Dashboard() {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
-          <CardTitle className="text-sm font-medium">Top Tenants by Revenue</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('dashboard.topTenantsByRevenue')}</CardTitle>
           <TrendingUp className="w-4 h-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="px-4 pb-4">
@@ -470,7 +472,7 @@ export default function Dashboard() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{tenant.name}</p>
                     <div className="flex items-center gap-3 mt-0.5">
-                      <span className="text-[11px] text-muted-foreground font-mono">{tenant.gpuHours}h GPU</span>
+                      <span className="text-[11px] text-muted-foreground font-mono">{t('dashboard.gpuHours', { hours: tenant.gpuHours })}</span>
                       <span className="text-[11px] font-mono text-status-online">${tenant.revenue.toLocaleString()}</span>
                     </div>
                   </div>

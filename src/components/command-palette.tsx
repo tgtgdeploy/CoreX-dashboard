@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Building2, Cpu, Globe, Zap, Bell, AlertOctagon, Search } from "lucide-react";
 import type { SearchResult } from "@shared/schema";
@@ -14,6 +15,7 @@ export function CommandPalette() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -49,22 +51,22 @@ export function CommandPalette() {
         className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted/50 border border-border/50 text-muted-foreground hover:bg-muted/80 transition-colors"
       >
         <Search className="w-3.5 h-3.5" />
-        <span className="text-xs hidden sm:inline">Search...</span>
+        <span className="text-xs hidden sm:inline">{t('common.search')}</span>
         <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono rounded bg-background/50 border border-border/50">
-          <span className="text-[10px]">\u2318</span>K
+          <span className="text-[10px]">{"\u2318"}</span>K
         </kbd>
       </button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
-          placeholder="Search tenants, jobs, endpoints, GPUs..."
+          placeholder={t('common.searchPlaceholder')}
           value={query}
           onValueChange={search}
         />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>{t('common.noResults')}</CommandEmpty>
           {results.length > 0 && (
-            <CommandGroup heading="Results">
+            <CommandGroup heading={t('common.results')}>
               {results.map(r => {
                 const Icon = ICON_MAP[r.icon] || Cpu;
                 return (
@@ -85,17 +87,17 @@ export function CommandPalette() {
             </CommandGroup>
           )}
           {query.length < 2 && (
-            <CommandGroup heading="Quick Nav">
+            <CommandGroup heading={t('common.quickNav')}>
               {[
-                { label: "Overview", url: "/" },
-                { label: "GPUs", url: "/gpus" },
-                { label: "Jobs", url: "/jobs" },
-                { label: "Endpoints", url: "/endpoints" },
-                { label: "Billing", url: "/billing" },
-                { label: "Replay", url: "/replay" },
+                { labelKey: "nav.overview", url: "/" },
+                { labelKey: "nav.gpus", url: "/gpus" },
+                { labelKey: "nav.jobs", url: "/jobs" },
+                { labelKey: "nav.endpoints", url: "/endpoints" },
+                { labelKey: "nav.billing", url: "/billing" },
+                { labelKey: "nav.replay", url: "/replay" },
               ].map(n => (
                 <CommandItem key={n.url} onSelect={() => { setOpen(false); navigate(n.url); }}>
-                  {n.label}
+                  {t(n.labelKey)}
                 </CommandItem>
               ))}
             </CommandGroup>

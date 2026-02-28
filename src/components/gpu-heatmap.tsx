@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { GpuSummary } from "@shared/schema";
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger
@@ -23,6 +24,7 @@ function getUtilBorder(util: number, status: string): string {
 }
 
 export function GpuHeatmap({ gpus, dcFilter }: { gpus: GpuSummary[]; dcFilter?: string }) {
+  const { t } = useTranslation();
   const filtered = dcFilter ? gpus.filter(g => g.dcName === dcFilter) : gpus;
 
   return (
@@ -43,15 +45,15 @@ export function GpuHeatmap({ gpus, dcFilter }: { gpus: GpuSummary[]; dcFilter?: 
                 <p className="font-mono text-xs font-bold">{gpu.id}</p>
                 <p className="text-[10px] text-muted-foreground">{gpu.model}</p>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px]">
-                  <span className="text-muted-foreground">Util</span>
+                  <span className="text-muted-foreground">{t('heatmap.tooltipUtil')}</span>
                   <span className="font-mono text-right">{gpu.utilization}%</span>
-                  <span className="text-muted-foreground">Temp</span>
+                  <span className="text-muted-foreground">{t('heatmap.tooltipTemp')}</span>
                   <span className="font-mono text-right">{gpu.temperature}°C</span>
-                  <span className="text-muted-foreground">Power</span>
+                  <span className="text-muted-foreground">{t('heatmap.tooltipPower')}</span>
                   <span className="font-mono text-right">{gpu.powerDraw}W</span>
-                  <span className="text-muted-foreground">VRAM</span>
+                  <span className="text-muted-foreground">{t('heatmap.tooltipVram')}</span>
                   <span className="font-mono text-right">{gpu.memoryUsedGb}/{gpu.memoryTotalGb}GB</span>
-                  <span className="text-muted-foreground">Status</span>
+                  <span className="text-muted-foreground">{t('heatmap.tooltipStatus')}</span>
                   <span className={`font-mono text-right capitalize ${gpu.status === "error" ? "text-red-400" : gpu.status === "maintenance" ? "text-purple-400" : ""}`}>{gpu.status}</span>
                 </div>
               </div>
@@ -64,9 +66,10 @@ export function GpuHeatmap({ gpus, dcFilter }: { gpus: GpuSummary[]; dcFilter?: 
 }
 
 export function HeatmapLegend() {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-3 flex-wrap">
-      <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Util:</span>
+      <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('heatmap.util')}</span>
       {[
         { label: "0-10%", color: "bg-zinc-800" },
         { label: "10-30%", color: "bg-emerald-900/60" },
@@ -83,11 +86,11 @@ export function HeatmapLegend() {
       ))}
       <div className="ml-2 flex items-center gap-1">
         <div className="w-3 h-3 rounded-[2px] bg-red-500/80 ring-1 ring-red-500/50" />
-        <span className="text-[10px] text-muted-foreground">Error</span>
+        <span className="text-[10px] text-muted-foreground">{t('heatmap.error')}</span>
       </div>
       <div className="flex items-center gap-1">
         <div className="w-3 h-3 rounded-[2px] bg-purple-500/50 ring-1 ring-purple-500/30" />
-        <span className="text-[10px] text-muted-foreground">Maint</span>
+        <span className="text-[10px] text-muted-foreground">{t('heatmap.maint')}</span>
       </div>
     </div>
   );

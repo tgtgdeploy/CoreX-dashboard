@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import type { Task } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,21 +52,22 @@ function formatDuration(minutes: number) {
 }
 
 function TaskTable({ tasks, showProgress }: { tasks: Task[]; showProgress: boolean }) {
+  const { t } = useTranslation();
   return (
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-xs">Task ID</TableHead>
-            <TableHead className="text-xs">Tenant</TableHead>
-            <TableHead className="text-xs">Model</TableHead>
-            <TableHead className="text-xs">Type</TableHead>
-            <TableHead className="text-xs">Priority</TableHead>
-            <TableHead className="text-xs">GPUs</TableHead>
-            <TableHead className="text-xs">Status</TableHead>
-            {showProgress && <TableHead className="text-xs">Progress</TableHead>}
-            <TableHead className="text-xs">Duration</TableHead>
-            <TableHead className="text-xs text-right">Cost</TableHead>
+            <TableHead className="text-xs">{t('tasks.tableTaskId')}</TableHead>
+            <TableHead className="text-xs">{t('tasks.tableTenant')}</TableHead>
+            <TableHead className="text-xs">{t('tasks.tableModel')}</TableHead>
+            <TableHead className="text-xs">{t('tasks.tableType')}</TableHead>
+            <TableHead className="text-xs">{t('tasks.tablePriority')}</TableHead>
+            <TableHead className="text-xs">{t('tasks.tableGpus')}</TableHead>
+            <TableHead className="text-xs">{t('tasks.tableStatus')}</TableHead>
+            {showProgress && <TableHead className="text-xs">{t('tasks.tableProgress')}</TableHead>}
+            <TableHead className="text-xs">{t('tasks.tableDuration')}</TableHead>
+            <TableHead className="text-xs text-right">{t('tasks.tableCost')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -100,7 +102,7 @@ function TaskTable({ tasks, showProgress }: { tasks: Task[]; showProgress: boole
           {tasks.length === 0 && (
             <TableRow>
               <TableCell colSpan={showProgress ? 10 : 9} className="text-center py-8 text-sm text-muted-foreground">
-                No tasks in this category
+                {t('tasks.noTasks')}
               </TableCell>
             </TableRow>
           )}
@@ -111,36 +113,37 @@ function TaskTable({ tasks, showProgress }: { tasks: Task[]; showProgress: boole
 }
 
 export default function Tasks() {
-  useEffect(() => { document.title = "Task Management | CoreX"; }, []);
+  const { t } = useTranslation();
+  useEffect(() => { document.title = t('tasks.pageTitle'); }, [t]);
   const { data: tasks, isLoading } = useQuery<Task[]>({
     queryKey: ["/api/tasks"],
     refetchInterval: 8000,
   });
 
-  const running = tasks?.filter(t => t.status === "running") || [];
-  const queued = tasks?.filter(t => t.status === "queued") || [];
-  const completed = tasks?.filter(t => t.status === "completed") || [];
-  const failed = tasks?.filter(t => t.status === "failed") || [];
-  const totalCost = tasks?.reduce((s, t) => s + t.cost, 0) || 0;
-  const totalGpuHours = tasks?.reduce((s, t) => s + t.gpuHoursUsed, 0) || 0;
+  const running = tasks?.filter(tk => tk.status === "running") || [];
+  const queued = tasks?.filter(tk => tk.status === "queued") || [];
+  const completed = tasks?.filter(tk => tk.status === "completed") || [];
+  const failed = tasks?.filter(tk => tk.status === "failed") || [];
+  const totalCost = tasks?.reduce((s, tk) => s + tk.cost, 0) || 0;
+  const totalGpuHours = tasks?.reduce((s, tk) => s + tk.gpuHoursUsed, 0) || 0;
 
   return (
     <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-[1600px] mx-auto">
       <div>
         <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight" data-testid="text-page-title">
-          Task Management
+          {t('tasks.title')}
         </h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Batch jobs and endpoint services orchestration
+          {t('tasks.subtitle')}
         </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Running", value: running.length, icon: PlayCircle, color: "text-status-online" },
-          { label: "Queued", value: queued.length, icon: Clock, color: "text-status-away" },
-          { label: "GPU Hours", value: totalGpuHours.toFixed(1), icon: Cpu, color: "text-chart-2" },
-          { label: "Total Cost", value: `$${totalCost.toFixed(0)}`, icon: DollarSign, color: "text-chart-1" },
+          { label: t('tasks.running'), value: running.length, icon: PlayCircle, color: "text-status-online" },
+          { label: t('tasks.queued'), value: queued.length, icon: Clock, color: "text-status-away" },
+          { label: t('tasks.gpuHours'), value: totalGpuHours.toFixed(1), icon: Cpu, color: "text-chart-2" },
+          { label: t('tasks.totalCost'), value: `$${totalCost.toFixed(0)}`, icon: DollarSign, color: "text-chart-1" },
         ].map((item) => (
           <Card key={item.label}>
             <CardContent className="p-3 flex items-center gap-2">
@@ -166,16 +169,16 @@ export default function Tasks() {
       <Tabs defaultValue="running" className="space-y-4">
         <TabsList data-testid="tabs-tasks">
           <TabsTrigger value="running" data-testid="tab-running">
-            Running ({running.length})
+            {t('tasks.tabRunning')} ({running.length})
           </TabsTrigger>
           <TabsTrigger value="queued" data-testid="tab-queued">
-            Queued ({queued.length})
+            {t('tasks.tabQueued')} ({queued.length})
           </TabsTrigger>
           <TabsTrigger value="completed" data-testid="tab-completed">
-            Completed ({completed.length})
+            {t('tasks.tabCompleted')} ({completed.length})
           </TabsTrigger>
           <TabsTrigger value="failed" data-testid="tab-failed">
-            Failed ({failed.length})
+            {t('tasks.tabFailed')} ({failed.length})
           </TabsTrigger>
         </TabsList>
 

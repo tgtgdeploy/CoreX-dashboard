@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { Incident } from "@shared/schema";
 import { KpiStatCard } from "@/components/kpi-stat-card";
 import { HealthBadge } from "@/components/health-badge";
@@ -9,6 +10,7 @@ import { AlertTriangle, Shield, Clock, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Incidents() {
+  const { t } = useTranslation();
   const { data = [] } = useQuery<Incident[]>({ queryKey: ["/api/incidents"], refetchInterval: 15000 });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = data.find(i => i.id === selectedId) ?? null;
@@ -24,17 +26,17 @@ export default function Incidents() {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <h1 className="text-xl sm:text-2xl font-display font-bold">Incidents</h1>
+      <h1 className="text-xl sm:text-2xl font-display font-bold">{t('incidents.title')}</h1>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <KpiStatCard title="Active" value={active} variant={active > 0 ? "critical" : "default"} icon={<AlertTriangle className="w-5 h-5 text-red-400" />} />
-        <KpiStatCard title="Critical" value={critical} variant={critical > 0 ? "critical" : "default"} icon={<Shield className="w-5 h-5 text-red-500" />} />
-        <KpiStatCard title="Resolved (24h)" value={resolved} icon={<CheckCircle2 className="w-5 h-5 text-emerald-400" />} />
-        <KpiStatCard title="Avg Resolution" value={`${avgMinutes}m`} icon={<Clock className="w-5 h-5 text-muted-foreground" />} />
+        <KpiStatCard title={t('incidents.active')} value={active} variant={active > 0 ? "critical" : "default"} icon={<AlertTriangle className="w-5 h-5 text-red-400" />} />
+        <KpiStatCard title={t('incidents.critical')} value={critical} variant={critical > 0 ? "critical" : "default"} icon={<Shield className="w-5 h-5 text-red-500" />} />
+        <KpiStatCard title={t('incidents.resolved24h')} value={resolved} icon={<CheckCircle2 className="w-5 h-5 text-emerald-400" />} />
+        <KpiStatCard title={t('incidents.avgResolution')} value={`${avgMinutes}m`} icon={<Clock className="w-5 h-5 text-muted-foreground" />} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4 lg:col-span-1">
-          <h3 className="text-sm font-medium mb-3">All Incidents</h3>
+          <h3 className="text-sm font-medium mb-3">{t('incidents.allIncidents')}</h3>
           <ScrollArea className="h-[500px]">
             <div className="space-y-2">
               {data.map(inc => (
@@ -61,7 +63,7 @@ export default function Incidents() {
                 </div>
               ))}
               {data.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-8">No incidents</p>
+                <p className="text-sm text-muted-foreground text-center py-8">{t('incidents.noIncidents')}</p>
               )}
             </div>
           </ScrollArea>
@@ -83,24 +85,24 @@ export default function Incidents() {
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-xs">
                 <div>
-                  <span className="text-muted-foreground block">Commander</span>
+                  <span className="text-muted-foreground block">{t('incidents.commander')}</span>
                   <span className="font-medium">{selected.commander}</span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground block">Started</span>
+                  <span className="text-muted-foreground block">{t('incidents.started')}</span>
                   <span className="font-mono">{new Date(selected.startedAt).toLocaleString()}</span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground block">Resolved</span>
+                  <span className="text-muted-foreground block">{t('incidents.resolved')}</span>
                   <span className="font-mono">{selected.resolvedAt ? new Date(selected.resolvedAt).toLocaleString() : "—"}</span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground block">Affected</span>
+                  <span className="text-muted-foreground block">{t('incidents.affected')}</span>
                   <span>{selected.affectedServices.join(", ")}</span>
                 </div>
               </div>
 
-              <h4 className="text-sm font-medium mb-2">Timeline</h4>
+              <h4 className="text-sm font-medium mb-2">{t('incidents.timeline')}</h4>
               <ScrollArea className="h-[350px]">
                 <div className="space-y-3">
                   {selected.updates.map((u, i) => (
@@ -109,7 +111,7 @@ export default function Incidents() {
                         <span className="font-mono text-[10px] text-muted-foreground">
                           {new Date(u.ts).toLocaleTimeString()}
                         </span>
-                        <span className="text-[10px] text-muted-foreground">by {u.author}</span>
+                        <span className="text-[10px] text-muted-foreground">{t('common.by')} {u.author}</span>
                       </div>
                       <p className="text-xs text-muted-foreground">{u.message}</p>
                     </div>
@@ -120,7 +122,7 @@ export default function Incidents() {
           ) : (
             <div className="flex items-center justify-center h-[500px] text-muted-foreground text-sm">
               <AlertTriangle className="w-8 h-8 mr-3 opacity-30" />
-              Select an incident to view details
+              {t('incidents.selectIncident')}
             </div>
           )}
         </Card>

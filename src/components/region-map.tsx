@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface RegionPoint {
   region: string;
@@ -23,6 +24,7 @@ function latLngToXY(lat: number, lng: number): { x: number; y: number } {
 }
 
 export function RegionMap({ regions, className }: RegionMapProps) {
+  const { t } = useTranslation();
   return (
     <div className={cn("relative w-full aspect-[2/1] bg-[#0a0e1a] rounded-lg overflow-hidden border border-border/30", className)}>
       {/* Grid lines */}
@@ -65,8 +67,8 @@ export function RegionMap({ regions, className }: RegionMapProps) {
               <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-md px-2.5 py-1.5 shadow-lg whitespace-nowrap">
                 <p className="text-xs font-medium">{r.region}</p>
                 <div className="flex gap-3 mt-0.5">
-                  <span className="text-[10px] text-muted-foreground">{r.totalGpus} GPUs</span>
-                  <span className="text-[10px] text-muted-foreground">{r.utilization.toFixed(0)}% util</span>
+                  <span className="text-[10px] text-muted-foreground">{t('regionMap.gpus', { count: r.totalGpus })}</span>
+                  <span className="text-[10px] text-muted-foreground">{t('regionMap.util', { value: r.utilization.toFixed(0) })}</span>
                 </div>
               </div>
             </div>

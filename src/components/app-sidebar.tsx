@@ -1,4 +1,5 @@
 import { useLocation, Link } from "wouter";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard, Server, Network, HardDrive, Cpu, CalendarClock,
   ListTodo, Layers, ShieldCheck, Globe, Building2, CreditCard,
@@ -19,76 +20,77 @@ import type { Alert } from "@shared/schema";
 import logoSrc from "@assets/photo_2026-02-15_10-10-27_1772231713455.jpg";
 
 interface NavItem {
-  title: string;
+  titleKey: string;
   url: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: number;
-  children?: { title: string; url: string }[];
+  children?: { titleKey: string; url: string }[];
 }
-
-const navSections: { label: string; items: NavItem[] }[] = [
-  {
-    label: "Overview",
-    items: [
-      { title: "Dashboard", url: "/", icon: LayoutDashboard },
-    ],
-  },
-  {
-    label: "Infrastructure",
-    items: [
-      { title: "Data Centers", url: "/data-centers", icon: Server },
-      { title: "Clusters", url: "/clusters", icon: Network },
-      { title: "Nodes", url: "/nodes", icon: HardDrive },
-      { title: "GPUs", url: "/gpus", icon: Cpu },
-    ],
-  },
-  {
-    label: "Compute",
-    items: [
-      {
-        title: "Scheduler", url: "/jobs", icon: CalendarClock,
-        children: [
-          { title: "Jobs", url: "/jobs" },
-          { title: "Queues", url: "/queues" },
-          { title: "Policies", url: "/policies" },
-        ],
-      },
-      { title: "Endpoints", url: "/endpoints", icon: Globe },
-    ],
-  },
-  {
-    label: "Business",
-    items: [
-      { title: "Tenants", url: "/tenants", icon: Building2 },
-      { title: "Billing", url: "/billing", icon: CreditCard },
-    ],
-  },
-  {
-    label: "Observability",
-    items: [
-      { title: "Monitoring", url: "/monitoring", icon: Activity },
-      { title: "Console", url: "/console", icon: Terminal },
-    ],
-  },
-  {
-    label: "Operations",
-    items: [
-      { title: "Alerts", url: "/alerts", icon: Bell },
-      { title: "Incidents", url: "/incidents", icon: AlertOctagon },
-      { title: "Replay", url: "/replay", icon: Play },
-    ],
-  },
-  {
-    label: "System",
-    items: [
-      { title: "Settings", url: "/settings", icon: Settings },
-    ],
-  },
-];
 
 export function AppSidebar() {
   const [location] = useLocation();
+  const { t } = useTranslation();
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set(["Scheduler"]));
+
+  const navSections: { labelKey: string; items: NavItem[] }[] = [
+    {
+      labelKey: "nav.overview",
+      items: [
+        { titleKey: "nav.dashboard", url: "/", icon: LayoutDashboard },
+      ],
+    },
+    {
+      labelKey: "nav.infrastructure",
+      items: [
+        { titleKey: "nav.dataCenters", url: "/data-centers", icon: Server },
+        { titleKey: "nav.clusters", url: "/clusters", icon: Network },
+        { titleKey: "nav.nodes", url: "/nodes", icon: HardDrive },
+        { titleKey: "nav.gpus", url: "/gpus", icon: Cpu },
+      ],
+    },
+    {
+      labelKey: "nav.compute",
+      items: [
+        {
+          titleKey: "nav.scheduler", url: "/jobs", icon: CalendarClock,
+          children: [
+            { titleKey: "nav.jobs", url: "/jobs" },
+            { titleKey: "nav.queues", url: "/queues" },
+            { titleKey: "nav.policies", url: "/policies" },
+          ],
+        },
+        { titleKey: "nav.endpoints", url: "/endpoints", icon: Globe },
+      ],
+    },
+    {
+      labelKey: "nav.business",
+      items: [
+        { titleKey: "nav.tenants", url: "/tenants", icon: Building2 },
+        { titleKey: "nav.billing", url: "/billing", icon: CreditCard },
+      ],
+    },
+    {
+      labelKey: "nav.observability",
+      items: [
+        { titleKey: "nav.monitoring", url: "/monitoring", icon: Activity },
+        { titleKey: "nav.console", url: "/console", icon: Terminal },
+      ],
+    },
+    {
+      labelKey: "nav.operations",
+      items: [
+        { titleKey: "nav.alerts", url: "/alerts", icon: Bell },
+        { titleKey: "nav.incidents", url: "/incidents", icon: AlertOctagon },
+        { titleKey: "nav.replay", url: "/replay", icon: Play },
+      ],
+    },
+    {
+      labelKey: "nav.system",
+      items: [
+        { titleKey: "nav.settings", url: "/settings", icon: Settings },
+      ],
+    },
+  ];
 
   const { data: alerts } = useQuery<Alert[]>({
     queryKey: ["/api/alerts"],
@@ -97,10 +99,10 @@ export function AppSidebar() {
 
   const criticalAlerts = alerts?.filter(a => !a.acknowledged && a.severity === "critical").length || 0;
 
-  const toggleMenu = (title: string) => {
+  const toggleMenu = (titleKey: string) => {
     setExpandedMenus(prev => {
       const next = new Set(prev);
-      if (next.has(title)) next.delete(title); else next.add(title);
+      if (next.has(titleKey)) next.delete(titleKey); else next.add(titleKey);
       return next;
     });
   };
@@ -118,7 +120,7 @@ export function AppSidebar() {
             </div>
             <div className="min-w-0">
               <h1 className="font-display text-base font-bold tracking-tight leading-none bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">CoreX</h1>
-              <p className="text-[9px] text-muted-foreground font-mono uppercase tracking-[0.2em] mt-0.5">Infrastructure</p>
+              <p className="text-[9px] text-muted-foreground font-mono uppercase tracking-[0.2em] mt-0.5">{t('common.infrastructure')}</p>
             </div>
           </div>
         </Link>
@@ -126,22 +128,22 @@ export function AppSidebar() {
 
       <SidebarContent className="pt-2 overflow-y-auto sidebar-scroll">
         {navSections.map(section => (
-          <SidebarGroup key={section.label} className="py-0.5 px-2">
+          <SidebarGroup key={section.labelKey} className="py-0.5 px-2">
             <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 px-3 py-1.5 mb-0.5">
-              {section.label}
+              {t(section.labelKey)}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {section.items.map(item => {
                   if (item.children) {
-                    const isExpanded = expandedMenus.has(item.title);
+                    const isExpanded = expandedMenus.has(item.titleKey);
                     const childActive = item.children.some(c => isActive(c.url));
                     return (
-                      <Collapsible key={item.title} open={isExpanded || childActive}>
+                      <Collapsible key={item.titleKey} open={isExpanded || childActive}>
                         <SidebarMenuItem>
                           <CollapsibleTrigger asChild>
                             <button
-                              onClick={() => toggleMenu(item.title)}
+                              onClick={() => toggleMenu(item.titleKey)}
                               className={`
                                 nav-btn group/nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm
                                 transition-all duration-200 ease-out relative overflow-hidden
@@ -163,7 +165,7 @@ export function AppSidebar() {
                               `}>
                                 <item.icon className="w-[15px] h-[15px]" />
                               </div>
-                              <span className="flex-1 text-left">{item.title}</span>
+                              <span className="flex-1 text-left">{t(item.titleKey)}</span>
                               <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-300 ease-out ${isExpanded || childActive ? "rotate-0" : "-rotate-90"}`} />
                             </button>
                           </CollapsibleTrigger>
@@ -183,7 +185,7 @@ export function AppSidebar() {
                                         }
                                       `}>
                                         <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${active ? "bg-primary scale-110" : "bg-muted-foreground/30"}`} />
-                                        <span>{child.title}</span>
+                                        <span>{t(child.titleKey)}</span>
                                         {active && <ChevronRight className="w-3 h-3 ml-auto text-primary/60" />}
                                       </div>
                                     </Link>
@@ -198,9 +200,9 @@ export function AppSidebar() {
                   }
 
                   const active = isActive(item.url);
-                  const showBadge = item.title === "Alerts" && criticalAlerts > 0;
+                  const showBadge = item.titleKey === "nav.alerts" && criticalAlerts > 0;
                   return (
-                    <SidebarMenuItem key={item.title}>
+                    <SidebarMenuItem key={item.titleKey}>
                       <Link href={item.url}>
                         <div
                           className={`
@@ -224,7 +226,7 @@ export function AppSidebar() {
                           `}>
                             <item.icon className="w-[15px] h-[15px]" />
                           </div>
-                          <span className="flex-1">{item.title}</span>
+                          <span className="flex-1">{t(item.titleKey)}</span>
                           {showBadge && (
                             <span className="relative flex items-center justify-center">
                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-40" />
@@ -251,7 +253,7 @@ export function AppSidebar() {
             <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 opacity-30" />
             <div className="relative w-2 h-2 rounded-full bg-status-online" />
           </div>
-          <span className="text-[11px] text-muted-foreground font-mono tracking-wide">All Systems Operational</span>
+          <span className="text-[11px] text-muted-foreground font-mono tracking-wide">{t('common.allSystemsOperational')}</span>
         </div>
       </SidebarFooter>
     </Sidebar>

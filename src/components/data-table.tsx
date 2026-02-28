@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface Column<T> {
@@ -20,8 +21,10 @@ interface DataTableProps<T> {
   emptyMessage?: string;
 }
 
-export function DataTable<T extends { id?: string }>({ data, columns, pageSize = 10, className, onRowClick, emptyMessage = "No data" }: DataTableProps<T>) {
+export function DataTable<T extends { id?: string }>({ data, columns, pageSize = 10, className, onRowClick, emptyMessage }: DataTableProps<T>) {
   const [page, setPage] = useState(0);
+  const { t } = useTranslation();
+  const displayEmpty = emptyMessage || t('common.noData');
   const totalPages = Math.ceil(data.length / pageSize);
   const paged = data.slice(page * pageSize, (page + 1) * pageSize);
 
@@ -49,7 +52,7 @@ export function DataTable<T extends { id?: string }>({ data, columns, pageSize =
             {paged.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={columns.length} className="text-center text-muted-foreground py-8 text-sm">
-                  {emptyMessage}
+                  {displayEmpty}
                 </TableCell>
               </TableRow>
             ) : (
@@ -83,7 +86,7 @@ export function DataTable<T extends { id?: string }>({ data, columns, pageSize =
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-3 px-1">
           <span className="text-[10px] sm:text-[11px] text-muted-foreground font-mono">
-            {page * pageSize + 1}-{Math.min((page + 1) * pageSize, data.length)} of {data.length}
+            {page * pageSize + 1}-{Math.min((page + 1) * pageSize, data.length)} {t('common.of')} {data.length}
           </span>
           <div className="flex items-center gap-1">
             <button

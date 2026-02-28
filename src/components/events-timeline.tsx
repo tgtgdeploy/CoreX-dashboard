@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import { AlertTriangle, CheckCircle2, Info, XCircle, Zap, ArrowUpCircle, Rocket, FileText, AlertOctagon, Play, Clock } from "lucide-react";
 import type { ActivityEvent, ReplayEvent } from "@shared/schema";
+import { timeAgo } from "@/i18n/utils";
 
 const SEVERITY_COLORS = {
   info: "border-blue-500/30 bg-blue-500/5",
@@ -21,17 +23,6 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   ArrowUpCircle, Rocket, FileText, AlertOctagon, Info, Zap, Clock,
 };
 
-function formatTimeAgo(ts: string): string {
-  const diff = Date.now() - new Date(ts).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
-
 interface EventsTimelineProps {
   events: (ActivityEvent | ReplayEvent)[];
   maxItems?: number;
@@ -41,6 +32,7 @@ interface EventsTimelineProps {
 
 export function EventsTimeline({ events, maxItems = 15, className, showTime = "relative" }: EventsTimelineProps) {
   const items = events.slice(0, maxItems);
+  const { t } = useTranslation();
 
   return (
     <div className={cn("space-y-1", className)}>
@@ -66,7 +58,7 @@ export function EventsTimeline({ events, maxItems = 15, className, showTime = "r
               )}
             </div>
             <span className="text-[10px] text-muted-foreground font-mono shrink-0 mt-0.5">
-              {showTime === "relative" && ts ? formatTimeAgo(ts) : ts ? new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
+              {showTime === "relative" && ts ? timeAgo(ts, t) : ts ? new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
             </span>
           </div>
         );

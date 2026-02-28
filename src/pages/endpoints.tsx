@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { Endpoint, EndpointMetric } from "@shared/schema";
 import { KpiStatCard } from "@/components/kpi-stat-card";
 import { HealthBadge } from "@/components/health-badge";
@@ -9,6 +10,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart,
 import { supabaseHeaders, apiBase } from "@/lib/queryClient";
 
 export default function Endpoints() {
+  const { t } = useTranslation();
   const { data = [] } = useQuery<Endpoint[]>({ queryKey: ["/api/endpoints"], refetchInterval: 5000 });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { data: metrics } = useQuery<EndpointMetric[]>({
@@ -25,12 +27,12 @@ export default function Endpoints() {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <h1 className="text-xl sm:text-2xl font-display font-bold">Inference Endpoints</h1>
+      <h1 className="text-xl sm:text-2xl font-display font-bold">{t('endpoints.title')}</h1>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <KpiStatCard title="Active Endpoints" value={running.length} subtitle={`of ${data.length} total`} icon={<Globe className="w-5 h-5 text-emerald-400" />} />
-        <KpiStatCard title="Total RPS" value={totalRps.toFixed(0)} icon={<Activity className="w-5 h-5 text-blue-400" />} />
-        <KpiStatCard title="Avg Latency P50" value={`${avgLatency}ms`} icon={<Clock className="w-5 h-5 text-muted-foreground" />} />
-        <KpiStatCard title="Cost / Hour" value={`$${totalCostHr.toFixed(2)}`} icon={<Zap className="w-5 h-5 text-amber-400" />} />
+        <KpiStatCard title={t('endpoints.activeEndpoints')} value={running.length} subtitle={t('endpoints.ofTotal', { total: data.length })} icon={<Globe className="w-5 h-5 text-emerald-400" />} />
+        <KpiStatCard title={t('endpoints.totalRps')} value={totalRps.toFixed(0)} icon={<Activity className="w-5 h-5 text-blue-400" />} />
+        <KpiStatCard title={t('endpoints.avgLatencyP50')} value={`${avgLatency}ms`} icon={<Clock className="w-5 h-5 text-muted-foreground" />} />
+        <KpiStatCard title={t('endpoints.costPerHour')} value={`$${totalCostHr.toFixed(2)}`} icon={<Zap className="w-5 h-5 text-amber-400" />} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
@@ -48,9 +50,9 @@ export default function Endpoints() {
             <div className="text-xs text-muted-foreground mb-2">{ep.gpus}x {ep.gpuModel} · {ep.modelName}</div>
             {ep.status === "running" && (
               <div className="grid grid-cols-3 gap-2 text-center">
-                <div><p className="text-lg font-display font-bold">{ep.rps.toFixed(0)}</p><p className="text-[10px] text-muted-foreground">RPS</p></div>
-                <div><p className="text-lg font-display font-bold">{ep.latencyP50.toFixed(0)}<span className="text-xs">ms</span></p><p className="text-[10px] text-muted-foreground">P50</p></div>
-                <div><p className="text-lg font-display font-bold">{ep.currentReplicas}/{ep.maxReplicas}</p><p className="text-[10px] text-muted-foreground">Replicas</p></div>
+                <div><p className="text-lg font-display font-bold">{ep.rps.toFixed(0)}</p><p className="text-[10px] text-muted-foreground">{t('endpoints.rps')}</p></div>
+                <div><p className="text-lg font-display font-bold">{ep.latencyP50.toFixed(0)}<span className="text-xs">ms</span></p><p className="text-[10px] text-muted-foreground">{t('endpoints.p50')}</p></div>
+                <div><p className="text-lg font-display font-bold">{ep.currentReplicas}/{ep.maxReplicas}</p><p className="text-[10px] text-muted-foreground">{t('endpoints.replicas')}</p></div>
               </div>
             )}
           </Card>
@@ -59,10 +61,10 @@ export default function Endpoints() {
 
       {selectedId && metrics && metrics.length > 0 && (
         <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4">
-          <h3 className="text-sm font-medium mb-3">Metrics — {selectedId}</h3>
+          <h3 className="text-sm font-medium mb-3">{t('endpoints.metrics', { id: selectedId })}</h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div>
-              <p className="text-xs text-muted-foreground mb-2">RPS</p>
+              <p className="text-xs text-muted-foreground mb-2">{t('endpoints.rps')}</p>
               <ResponsiveContainer width="100%" height={180}>
                 <AreaChart data={metrics}>
                   <XAxis dataKey="ts" tick={false} axisLine={false} />
@@ -73,7 +75,7 @@ export default function Endpoints() {
               </ResponsiveContainer>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground mb-2">Latency (ms)</p>
+              <p className="text-xs text-muted-foreground mb-2">{t('endpoints.latencyMs')}</p>
               <ResponsiveContainer width="100%" height={180}>
                 <LineChart data={metrics}>
                   <XAxis dataKey="ts" tick={false} axisLine={false} />

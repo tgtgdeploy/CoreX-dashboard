@@ -1,6 +1,8 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import type { Alert } from "@shared/schema";
+import { timeAgo } from "@/i18n/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,18 +19,8 @@ function SeverityIcon({ severity }: { severity: Alert["severity"] }) {
   return <Info className="w-4 h-4 text-primary" />;
 }
 
-function timeAgo(timestamp: string) {
-  const seconds = Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000);
-  if (seconds < 60) return `${seconds}s ago`;
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
-
 function AlertCard({ alert }: { alert: Alert }) {
+  const { t } = useTranslation();
   return (
     <div
       className={`flex items-start gap-3 p-4 rounded-md border ${
@@ -50,7 +42,7 @@ function AlertCard({ alert }: { alert: Alert }) {
           </Badge>
           {alert.acknowledged && (
             <span className="inline-flex items-center gap-0.5 text-[10px] text-status-online">
-              <CheckCircle2 className="w-3 h-3" /> Acknowledged
+              <CheckCircle2 className="w-3 h-3" /> {t('alerts.acknowledged')}
             </span>
           )}
         </div>
@@ -65,7 +57,7 @@ function AlertCard({ alert }: { alert: Alert }) {
           </div>
           <div className="flex items-center gap-1">
             <Clock className="w-3 h-3 text-muted-foreground" />
-            <span className="text-[11px] text-muted-foreground font-mono">{timeAgo(alert.timestamp)}</span>
+            <span className="text-[11px] text-muted-foreground font-mono">{timeAgo(alert.timestamp, t)}</span>
           </div>
         </div>
       </div>
@@ -74,7 +66,8 @@ function AlertCard({ alert }: { alert: Alert }) {
 }
 
 export default function Alerts() {
-  useEffect(() => { document.title = "Alerts | CoreX"; }, []);
+  const { t } = useTranslation();
+  useEffect(() => { document.title = t('alerts.pageTitle'); }, []);
   const { data: alerts, isLoading } = useQuery<Alert[]>({
     queryKey: ["/api/alerts"],
     refetchInterval: 15000,
@@ -90,23 +83,23 @@ export default function Alerts() {
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div>
           <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight" data-testid="text-page-title">
-            Alerts & Notifications
+            {t('alerts.title')}
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            System alerts, warnings, and operational notifications
+            {t('alerts.subtitle')}
           </p>
         </div>
         <Badge variant="outline" className="font-mono text-xs">
-          {unacknowledged.length} unacknowledged
+          {t('alerts.unacknowledged', { count: unacknowledged.length })}
         </Badge>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total Alerts", value: alerts?.length || 0, icon: Bell, color: "text-primary" },
-          { label: "Critical", value: criticalAlerts.length, icon: AlertCircle, color: "text-status-busy" },
-          { label: "Warnings", value: warningAlerts.length, icon: AlertTriangle, color: "text-status-away" },
-          { label: "Info", value: infoAlerts.length, icon: Info, color: "text-chart-2" },
+          { label: t('alerts.totalAlerts'), value: alerts?.length || 0, icon: Bell, color: "text-primary" },
+          { label: t('alerts.critical'), value: criticalAlerts.length, icon: AlertCircle, color: "text-status-busy" },
+          { label: t('alerts.warnings'), value: warningAlerts.length, icon: AlertTriangle, color: "text-status-away" },
+          { label: t('alerts.info'), value: infoAlerts.length, icon: Info, color: "text-chart-2" },
         ].map((item) => (
           <Card key={item.label}>
             <CardContent className="p-3 flex items-center gap-2">
@@ -131,10 +124,10 @@ export default function Alerts() {
 
       <Tabs defaultValue="all" className="space-y-4">
         <TabsList data-testid="tabs-alerts">
-          <TabsTrigger value="all" data-testid="tab-all">All ({alerts?.length || 0})</TabsTrigger>
-          <TabsTrigger value="critical" data-testid="tab-critical">Critical ({criticalAlerts.length})</TabsTrigger>
-          <TabsTrigger value="warning" data-testid="tab-warning">Warning ({warningAlerts.length})</TabsTrigger>
-          <TabsTrigger value="info" data-testid="tab-info">Info ({infoAlerts.length})</TabsTrigger>
+          <TabsTrigger value="all" data-testid="tab-all">{t('alerts.tabAll')} ({alerts?.length || 0})</TabsTrigger>
+          <TabsTrigger value="critical" data-testid="tab-critical">{t('alerts.tabCritical')} ({criticalAlerts.length})</TabsTrigger>
+          <TabsTrigger value="warning" data-testid="tab-warning">{t('alerts.tabWarning')} ({warningAlerts.length})</TabsTrigger>
+          <TabsTrigger value="info" data-testid="tab-info">{t('alerts.tabInfo')} ({infoAlerts.length})</TabsTrigger>
         </TabsList>
 
         {["all", "critical", "warning", "info"].map((tab) => {
@@ -163,7 +156,7 @@ export default function Alerts() {
                   <Card>
                     <CardContent className="p-8 text-center">
                       <CheckCircle2 className="w-8 h-8 text-status-online mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">No alerts in this category</p>
+                      <p className="text-sm text-muted-foreground">{t('alerts.noAlerts')}</p>
                     </CardContent>
                   </Card>
                 )}

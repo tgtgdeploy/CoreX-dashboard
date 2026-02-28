@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import type { BillingData } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,7 +44,8 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function Billing() {
-  useEffect(() => { document.title = "Billing & Revenue | CoreX"; }, []);
+  const { t } = useTranslation();
+  useEffect(() => { document.title = t('billing.pageTitle'); }, []);
   const { data, isLoading } = useQuery<BillingData>({
     queryKey: ["/api/billing"],
     refetchInterval: 30000,
@@ -53,19 +55,19 @@ export default function Billing() {
     <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-[1600px] mx-auto">
       <div>
         <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight" data-testid="text-page-title">
-          Billing & Revenue
+          {t('billing.title')}
         </h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Financial overview and invoice management
+          {t('billing.subtitle')}
         </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total Revenue", value: data ? `$${(data.totalRevenue / 1000).toFixed(0)}K` : "—", icon: DollarSign, color: "text-chart-1" },
-          { label: "Monthly Revenue", value: data ? `$${(data.monthlyRevenue / 1000).toFixed(0)}K` : "—", icon: TrendingUp, color: "text-status-online" },
-          { label: "Outstanding", value: data ? `$${(data.outstandingAmount / 1000).toFixed(0)}K` : "—", icon: AlertCircle, color: "text-status-away" },
-          { label: "Active Invoices", value: data ? `${data.records.filter(r => r.status !== "paid").length}` : "—", icon: Receipt, color: "text-chart-4" },
+          { label: t('billing.totalRevenue'), value: data ? `$${(data.totalRevenue / 1000).toFixed(0)}K` : "—", icon: DollarSign, color: "text-chart-1" },
+          { label: t('billing.monthlyRevenue'), value: data ? `$${(data.monthlyRevenue / 1000).toFixed(0)}K` : "—", icon: TrendingUp, color: "text-status-online" },
+          { label: t('billing.outstanding'), value: data ? `$${(data.outstandingAmount / 1000).toFixed(0)}K` : "—", icon: AlertCircle, color: "text-status-away" },
+          { label: t('billing.activeInvoices'), value: data ? `${data.records.filter(r => r.status !== "paid").length}` : "—", icon: Receipt, color: "text-chart-4" },
         ].map((item) => (
           <Card key={item.label}>
             <CardContent className="p-4 flex items-center gap-3">
@@ -93,7 +95,7 @@ export default function Billing() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2">
           <CardHeader className="px-4 pt-4 pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Monthly Revenue Trend</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('billing.monthlyRevenueTrend')}</CardTitle>
           </CardHeader>
           <CardContent className="px-2 pb-2">
             {isLoading ? <Skeleton className="h-[240px] w-full" /> : (
@@ -120,7 +122,7 @@ export default function Billing() {
 
         <Card>
           <CardHeader className="px-4 pt-4 pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Revenue by Tier</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('billing.revenueByTier')}</CardTitle>
           </CardHeader>
           <CardContent className="px-2 pb-2">
             {isLoading ? <Skeleton className="h-[180px] w-full" /> : (
@@ -160,7 +162,7 @@ export default function Billing() {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
-          <CardTitle className="text-sm font-medium">Cost Breakdown (Current Month)</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('billing.costBreakdown')}</CardTitle>
           <CreditCard className="w-4 h-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="px-4 pb-4">
@@ -178,7 +180,7 @@ export default function Billing() {
                     <div className="w-1 h-8 rounded-full flex-shrink-0" style={{ background: CHART_COLORS[i % CHART_COLORS.length] }} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm truncate">{item.category}</p>
-                      <p className="text-xs text-muted-foreground">{pct}% of costs</p>
+                      <p className="text-xs text-muted-foreground">{t('billing.ofCosts', { pct })}</p>
                     </div>
                     <span className="text-sm font-mono font-medium">${(item.amount / 1000).toFixed(1)}K</span>
                   </div>
@@ -191,22 +193,22 @@ export default function Billing() {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
-          <CardTitle className="text-sm font-medium">Invoice History</CardTitle>
-          <Badge variant="outline" className="text-[10px] font-mono">{data?.records.length || 0} records</Badge>
+          <CardTitle className="text-sm font-medium">{t('billing.invoiceHistory')}</CardTitle>
+          <Badge variant="outline" className="text-[10px] font-mono">{data?.records.length || 0} {t('common.records')}</Badge>
         </CardHeader>
         <CardContent className="px-0 pb-0">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-xs">Invoice</TableHead>
-                  <TableHead className="text-xs">Tenant</TableHead>
-                  <TableHead className="text-xs">Tier</TableHead>
-                  <TableHead className="text-xs">Period</TableHead>
-                  <TableHead className="text-xs">GPU Hours</TableHead>
-                  <TableHead className="text-xs text-right">Amount</TableHead>
-                  <TableHead className="text-xs">Status</TableHead>
-                  <TableHead className="text-xs">Due Date</TableHead>
+                  <TableHead className="text-xs">{t('billing.tableInvoice')}</TableHead>
+                  <TableHead className="text-xs">{t('billing.tableTenant')}</TableHead>
+                  <TableHead className="text-xs">{t('billing.tableTier')}</TableHead>
+                  <TableHead className="text-xs">{t('billing.tablePeriod')}</TableHead>
+                  <TableHead className="text-xs">{t('billing.tableGpuHours')}</TableHead>
+                  <TableHead className="text-xs text-right">{t('billing.tableAmount')}</TableHead>
+                  <TableHead className="text-xs">{t('billing.tableStatus')}</TableHead>
+                  <TableHead className="text-xs">{t('billing.tableDueDate')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

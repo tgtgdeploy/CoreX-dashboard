@@ -7,6 +7,8 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeProvider, useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useTranslation } from "react-i18next";
 import {
   Sun, Moon, LayoutDashboard, Server, Cpu,
   Activity, Bell, Search, Command
@@ -74,15 +76,16 @@ function ThemeToggle() {
 }
 
 const mobileNavItems = [
-  { icon: LayoutDashboard, label: "Home", url: "/" },
-  { icon: Activity, label: "Monitor", url: "/monitoring" },
-  { icon: Cpu, label: "GPUs", url: "/gpus" },
-  { icon: Server, label: "Infra", url: "/data-centers" },
-  { icon: Bell, label: "Alerts", url: "/alerts" },
+  { icon: LayoutDashboard, labelKey: "mobile.home", url: "/" },
+  { icon: Activity, labelKey: "mobile.monitor", url: "/monitoring" },
+  { icon: Cpu, labelKey: "mobile.gpus", url: "/gpus" },
+  { icon: Server, labelKey: "mobile.infra", url: "/data-centers" },
+  { icon: Bell, labelKey: "mobile.alerts", url: "/alerts" },
 ];
 
 function MobileBottomNav() {
   const [location] = useLocation();
+  const { t } = useTranslation();
   const isActive = (url: string) => url === "/" ? location === "/" : location.startsWith(url);
 
   return (
@@ -110,7 +113,7 @@ function MobileBottomNav() {
                   )}
                 </div>
                 <span className={`text-[10px] font-medium tracking-wide transition-all duration-200 ${active ? "text-primary" : ""}`}>
-                  {item.label}
+                  {t(item.labelKey)}
                 </span>
               </button>
             </Link>
@@ -122,6 +125,7 @@ function MobileBottomNav() {
 }
 
 function AppLayout() {
+  const { t } = useTranslation();
   const style = {
     "--sidebar-width": "15.5rem",
     "--sidebar-width-icon": "3.5rem",
@@ -141,15 +145,16 @@ function AppLayout() {
             <div className="flex items-center gap-1.5">
               <button className="hidden md:flex items-center gap-2 h-8 px-3 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/50 transition-colors text-muted-foreground text-xs">
                 <Search className="w-3.5 h-3.5" />
-                <span className="hidden lg:inline">Search...</span>
+                <span className="hidden lg:inline">{t('common.search')}</span>
                 <kbd className="hidden lg:inline-flex h-5 items-center gap-0.5 rounded border border-border/50 bg-background/80 px-1.5 text-[10px] font-mono text-muted-foreground/60">
                   <Command className="w-2.5 h-2.5" />K
                 </kbd>
               </button>
               <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-500/8 border border-emerald-500/10">
                 <div className="w-1.5 h-1.5 rounded-full bg-status-online glow-online" />
-                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-medium tracking-wider">LIVE</span>
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-medium tracking-wider">{t('common.live')}</span>
               </div>
+              <LanguageSwitcher />
               <ThemeToggle />
             </div>
           </header>

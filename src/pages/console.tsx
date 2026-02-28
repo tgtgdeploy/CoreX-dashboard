@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import type { MonitoringData } from "@shared/schema";
 import { Card } from "@/components/ui/card";
@@ -8,7 +9,8 @@ import { Terminal } from "lucide-react";
 import dcHeroSrc from "@assets/dc-hero.png";
 
 export default function Console() {
-  useEffect(() => { document.title = "System Console | CoreX"; }, []);
+  const { t } = useTranslation();
+  useEffect(() => { document.title = `${t('console.title')} | CoreX`; }, [t]);
 
   const { data, isLoading } = useQuery<MonitoringData>({
     queryKey: ["/api/monitoring"],
@@ -24,13 +26,13 @@ export default function Console() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">Live Feed</span>
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">{t('console.liveFeed')}</span>
             </div>
             <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-white" data-testid="text-page-title">
-              System Console
+              {t('console.title')}
             </h1>
             <p className="text-sm text-zinc-400 mt-0.5">
-              Real-time infrastructure log stream
+              {t('console.subtitle')}
             </p>
           </div>
         </div>

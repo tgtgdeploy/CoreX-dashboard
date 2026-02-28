@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import type { DataCenter } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,7 +39,8 @@ function MetricRow({ icon: Icon, label, value, subValue, color }: {
 }
 
 export default function DataCenters() {
-  useEffect(() => { document.title = "Data Centers | CoreX"; }, []);
+  useEffect(() => { document.title = t('dataCenters.pageTitle'); }, []);
+  const { t } = useTranslation();
   const { data: dataCenters, isLoading } = useQuery<DataCenter[]>({
     queryKey: ["/api/data-centers"],
     refetchInterval: 10000,
@@ -52,10 +54,10 @@ export default function DataCenters() {
         <div className="absolute inset-0 flex items-center px-6 md:px-8">
           <div>
             <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-white" data-testid="text-page-title">
-              Data Centers
+              {t('dataCenters.title')}
             </h1>
             <p className="text-sm text-zinc-400 mt-0.5">
-              Infrastructure topology and resource inventory
+              {t('dataCenters.subtitle')}
             </p>
           </div>
         </div>
@@ -87,7 +89,7 @@ export default function DataCenters() {
                   <Server className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Data Centers</p>
+                  <p className="text-xs text-muted-foreground">{t('dataCenters.dataCenters')}</p>
                   <p className="text-lg font-mono font-bold">{dataCenters?.length}</p>
                 </div>
               </CardContent>
@@ -98,7 +100,7 @@ export default function DataCenters() {
                   <Cpu className="w-4 h-4 text-chart-2" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Total GPUs</p>
+                  <p className="text-xs text-muted-foreground">{t('dataCenters.totalGpus')}</p>
                   <p className="text-lg font-mono font-bold">
                     {dataCenters?.reduce((s, d) => s + d.totalGpus, 0)}
                   </p>
@@ -111,7 +113,7 @@ export default function DataCenters() {
                   <Layers className="w-4 h-4 text-chart-5" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Total Clusters</p>
+                  <p className="text-xs text-muted-foreground">{t('dataCenters.totalClusters')}</p>
                   <p className="text-lg font-mono font-bold">
                     {dataCenters?.reduce((s, d) => s + d.clusterCount, 0)}
                   </p>
@@ -124,7 +126,7 @@ export default function DataCenters() {
                   <Network className="w-4 h-4 text-chart-4" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Total Nodes</p>
+                  <p className="text-xs text-muted-foreground">{t('dataCenters.totalNodes')}</p>
                   <p className="text-lg font-mono font-bold">
                     {dataCenters?.reduce((s, d) => s + d.nodeCount, 0)}
                   </p>
@@ -156,20 +158,20 @@ export default function DataCenters() {
                 <CardContent className="px-5 pb-5">
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xs text-muted-foreground">GPU Utilization</span>
+                      <span className="text-xs text-muted-foreground">{t('dataCenters.gpuUtilization')}</span>
                       <span className="text-xs font-mono font-medium">{dc.utilization}%</span>
                     </div>
                     <Progress value={dc.utilization} className="h-1.5" />
                   </div>
 
                   <div className="space-y-0 divide-y">
-                    <MetricRow icon={Cpu} label="GPUs" value={`${dc.availableGpus} / ${dc.totalGpus}`} subValue="avail" color="text-chart-2" />
-                    <MetricRow icon={Layers} label="Clusters" value={`${dc.clusterCount}`} color="text-chart-5" />
-                    <MetricRow icon={Server} label="Nodes" value={`${dc.nodeCount}`} color="text-chart-4" />
-                    <MetricRow icon={Thermometer} label="Avg Temp" value={`${dc.avgTemperature}°C`} color="text-status-away" />
-                    <MetricRow icon={Zap} label="Power" value={`${dc.powerUsageKw} kW`} color="text-chart-1" />
-                    <MetricRow icon={Network} label="Bandwidth" value={`${dc.networkBandwidthGbps} Gbps`} color="text-primary" />
-                    <MetricRow icon={HardDrive} label="Storage" value={`${dc.storageUsedTb} / ${dc.storageTotalTb} TB`} color="text-muted-foreground" />
+                    <MetricRow icon={Cpu} label={t('dataCenters.gpus')} value={`${dc.availableGpus} / ${dc.totalGpus}`} subValue={t('common.avail')} color="text-chart-2" />
+                    <MetricRow icon={Layers} label={t('dataCenters.clusters')} value={`${dc.clusterCount}`} color="text-chart-5" />
+                    <MetricRow icon={Server} label={t('dataCenters.nodes')} value={`${dc.nodeCount}`} color="text-chart-4" />
+                    <MetricRow icon={Thermometer} label={t('dataCenters.avgTemp')} value={`${dc.avgTemperature}°C`} color="text-status-away" />
+                    <MetricRow icon={Zap} label={t('dataCenters.power')} value={`${dc.powerUsageKw} kW`} color="text-chart-1" />
+                    <MetricRow icon={Network} label={t('dataCenters.bandwidth')} value={`${dc.networkBandwidthGbps} Gbps`} color="text-primary" />
+                    <MetricRow icon={HardDrive} label={t('dataCenters.storage')} value={`${dc.storageUsedTb} / ${dc.storageTotalTb} TB`} color="text-muted-foreground" />
                   </div>
                 </CardContent>
               </Card>

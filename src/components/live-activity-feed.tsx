@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import type { ActivityEvent } from "@shared/schema";
 import { CheckCircle2, XCircle, AlertTriangle, ArrowUpCircle, ArrowDownCircle, Rocket, FileText, AlertOctagon, Play, Zap, Server } from "lucide-react";
+import { timeAgoShort } from "@/i18n/utils";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   job_started: Play,
@@ -23,17 +25,6 @@ const COLORS: Record<string, string> = {
   critical: "text-red-400",
 };
 
-function timeAgo(ts: string): string {
-  const diff = Date.now() - new Date(ts).getTime();
-  const s = Math.floor(diff / 1000);
-  if (s < 60) return `${s}s`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h`;
-  return `${Math.floor(h / 24)}d`;
-}
-
 interface LiveActivityFeedProps {
   events: ActivityEvent[];
   maxItems?: number;
@@ -41,6 +32,7 @@ interface LiveActivityFeedProps {
 }
 
 export function LiveActivityFeed({ events, maxItems = 12, className }: LiveActivityFeedProps) {
+  const { t } = useTranslation();
   return (
     <div className={cn("space-y-0.5 overflow-hidden", className)}>
       {events.slice(0, maxItems).map((event, i) => {
@@ -53,7 +45,7 @@ export function LiveActivityFeed({ events, maxItems = 12, className }: LiveActiv
             <Icon className={cn("w-3.5 h-3.5 shrink-0", COLORS[event.severity])} />
             <span className="truncate flex-1 text-[11px] sm:text-xs">{event.title}</span>
             <span className="text-[10px] text-muted-foreground font-mono shrink-0 opacity-60 group-hover:opacity-100">
-              {timeAgo(event.ts)}
+              {timeAgoShort(event.ts, t)}
             </span>
           </div>
         );

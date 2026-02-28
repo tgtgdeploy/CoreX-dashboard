@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import type { MonitoringData } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,7 +42,8 @@ function StatusDot({ status }: { status: string }) {
 }
 
 export default function Monitoring() {
-  useEffect(() => { document.title = "GPU Monitoring | CoreX"; }, []);
+  const { t } = useTranslation();
+  useEffect(() => { document.title = t('monitoring.pageTitle'); }, [t]);
   const [dcFilter, setDcFilter] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery<MonitoringData>({
@@ -78,21 +80,21 @@ export default function Monitoring() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">Live Monitoring</span>
+                <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">{t('monitoring.liveMonitoring')}</span>
               </div>
               <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-white" data-testid="text-page-title">
-                GPU Fleet Observability
+                {t('monitoring.title')}
               </h1>
               <p className="text-sm text-zinc-400 mt-0.5">
-                Real-time telemetry across {totalGpus} GPUs in 4 regions
+                {t('monitoring.subtitle', { count: totalGpus })}
               </p>
             </div>
             <div className="flex items-center gap-4">
               {[
-                { label: "Active", count: busyCount, color: "text-emerald-400", dot: "bg-emerald-400" },
-                { label: "Idle", count: idleCount, color: "text-zinc-400", dot: "bg-zinc-500" },
-                { label: "Error", count: errorCount, color: "text-red-400", dot: "bg-red-400" },
-                { label: "Maint", count: maintCount, color: "text-purple-400", dot: "bg-purple-400" },
+                { label: t('monitoring.active'), count: busyCount, color: "text-emerald-400", dot: "bg-emerald-400" },
+                { label: t('monitoring.idle'), count: idleCount, color: "text-zinc-400", dot: "bg-zinc-500" },
+                { label: t('monitoring.error'), count: errorCount, color: "text-red-400", dot: "bg-red-400" },
+                { label: t('monitoring.maint'), count: maintCount, color: "text-purple-400", dot: "bg-purple-400" },
               ].map(item => (
                 <div key={item.label} className="text-center">
                   <div className="flex items-center gap-1.5 justify-center mb-0.5">
@@ -123,7 +125,7 @@ export default function Monitoring() {
                 <RadialGauge
                   value={data?.avgUtilization || 0}
                   max={100}
-                  label="Utilization"
+                  label={t('monitoring.utilization')}
                   unit="%"
                   color="hsl(217, 91%, 60%)"
                   warning={80}
@@ -136,7 +138,7 @@ export default function Monitoring() {
                 <RadialGauge
                   value={data?.avgTemperature || 0}
                   max={100}
-                  label="Temperature"
+                  label={t('monitoring.temperature')}
                   unit="°C"
                   color="hsl(195, 87%, 55%)"
                   warning={75}
@@ -149,7 +151,7 @@ export default function Monitoring() {
                 <RadialGauge
                   value={data?.totalPowerKw || 0}
                   max={250}
-                  label="Power"
+                  label={t('monitoring.power')}
                   unit="kW"
                   color="hsl(45, 90%, 55%)"
                   warning={200}
@@ -162,7 +164,7 @@ export default function Monitoring() {
                 <RadialGauge
                   value={data?.totalMemoryUsedGb || 0}
                   max={data?.totalMemoryTotalGb || 1}
-                  label="VRAM"
+                  label={t('monitoring.vram')}
                   unit="GB"
                   color="hsl(280, 82%, 60%)"
                 />
@@ -173,7 +175,7 @@ export default function Monitoring() {
                 <RadialGauge
                   value={errorCount}
                   max={Math.max(totalGpus * 0.05, errorCount + 1)}
-                  label="Errors"
+                  label={t('monitoring.errors')}
                   unit="GPUs"
                   color="hsl(160, 75%, 50%)"
                   warning={5}
@@ -188,16 +190,16 @@ export default function Monitoring() {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList data-testid="tabs-monitoring" className="bg-zinc-900/50">
           <TabsTrigger value="overview" data-testid="tab-overview">
-            <Eye className="w-3.5 h-3.5 mr-1.5" />Overview
+            <Eye className="w-3.5 h-3.5 mr-1.5" />{t('monitoring.tabOverview')}
           </TabsTrigger>
           <TabsTrigger value="heatmap" data-testid="tab-heatmap">
-            <Gauge className="w-3.5 h-3.5 mr-1.5" />GPU Grid
+            <Gauge className="w-3.5 h-3.5 mr-1.5" />{t('monitoring.tabGpuGrid')}
           </TabsTrigger>
           <TabsTrigger value="charts" data-testid="tab-charts">
-            <Activity className="w-3.5 h-3.5 mr-1.5" />Charts
+            <Activity className="w-3.5 h-3.5 mr-1.5" />{t('monitoring.tabCharts')}
           </TabsTrigger>
           <TabsTrigger value="gpus" data-testid="tab-gpus">
-            <Server className="w-3.5 h-3.5 mr-1.5" />Fleet Table
+            <Server className="w-3.5 h-3.5 mr-1.5" />{t('monitoring.tabFleetTable')}
           </TabsTrigger>
         </TabsList>
 
@@ -206,7 +208,7 @@ export default function Monitoring() {
             <div className="lg:col-span-2 space-y-4">
               <Card className="bg-zinc-950/50 border-zinc-800/50">
                 <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
-                  <CardTitle className="text-sm font-medium">GPUs by Region</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t('monitoring.gpusByRegion')}</CardTitle>
                   <Server className="w-4 h-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent className="px-2 pb-2">
@@ -240,7 +242,7 @@ export default function Monitoring() {
               </Card>
               <Card className="bg-zinc-950/50 border-zinc-800/50">
                 <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
-                  <CardTitle className="text-sm font-medium">Utilization Trend (24h)</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t('monitoring.utilizationTrend24h')}</CardTitle>
                   <Activity className="w-4 h-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent className="px-2 pb-2">
@@ -290,8 +292,8 @@ export default function Monitoring() {
           <Card className="bg-zinc-950/50 border-zinc-800/50">
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
               <div>
-                <CardTitle className="text-sm font-medium">GPU Fleet Topology</CardTitle>
-                <p className="text-xs text-muted-foreground mt-0.5">Each cell represents one GPU — hover for details</p>
+                <CardTitle className="text-sm font-medium">{t('monitoring.gpuFleetTopology')}</CardTitle>
+                <p className="text-xs text-muted-foreground mt-0.5">{t('monitoring.gpuFleetTopologyDesc')}</p>
               </div>
               <div className="flex items-center gap-1.5">
                 <button
@@ -299,7 +301,7 @@ export default function Monitoring() {
                   className={`text-[10px] font-mono px-2 py-1 rounded transition-colors ${!dcFilter ? "bg-primary/20 text-primary" : "text-zinc-500 hover:text-zinc-300"}`}
                   data-testid="button-filter-all"
                 >
-                  All
+                  {t('common.all')}
                 </button>
                 {data?.gpusByDc?.map(d => (
                   <button
@@ -327,10 +329,10 @@ export default function Monitoring() {
         <TabsContent value="charts">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { title: "Temperature History (24h)", data: data?.temperatureHistory, color: CHART_COLORS[3], unit: "°C", id: "tempGrad" },
-              { title: "Power Usage History (24h)", data: data?.powerHistory, color: CHART_COLORS[4], unit: " kW", id: "powerGrad" },
-              { title: "Memory Utilization (24h)", data: data?.memoryHistory, color: CHART_COLORS[1], unit: "%", id: "memGrad" },
-              { title: "Utilization (24h)", data: data?.utilizationHistory, color: CHART_COLORS[0], unit: "%", id: "util2Grad" },
+              { title: t('monitoring.temperatureHistory'), data: data?.temperatureHistory, color: CHART_COLORS[3], unit: "°C", id: "tempGrad" },
+              { title: t('monitoring.powerUsageHistory'), data: data?.powerHistory, color: CHART_COLORS[4], unit: " kW", id: "powerGrad" },
+              { title: t('monitoring.memoryUtilization'), data: data?.memoryHistory, color: CHART_COLORS[1], unit: "%", id: "memGrad" },
+              { title: t('monitoring.utilization24h'), data: data?.utilizationHistory, color: CHART_COLORS[0], unit: "%", id: "util2Grad" },
             ].map((chart) => (
               <Card key={chart.title} className="bg-zinc-950/50 border-zinc-800/50">
                 <CardHeader className="px-4 pt-4 pb-2 space-y-0">
@@ -371,23 +373,23 @@ export default function Monitoring() {
         <TabsContent value="gpus">
           <Card className="bg-zinc-950/50 border-zinc-800/50">
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
-              <CardTitle className="text-sm font-medium">GPU Fleet Status</CardTitle>
-              <Badge variant="outline" className="text-[10px] font-mono">{data?.gpus?.length || 0} GPUs shown</Badge>
+              <CardTitle className="text-sm font-medium">{t('monitoring.gpuFleetStatus')}</CardTitle>
+              <Badge variant="outline" className="text-[10px] font-mono">{t('monitoring.gpusShown', { count: data?.gpus?.length || 0 })}</Badge>
             </CardHeader>
             <CardContent className="px-0 pb-0">
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow className="border-zinc-800">
-                      <TableHead className="text-xs">ID</TableHead>
-                      <TableHead className="text-xs">Model</TableHead>
-                      <TableHead className="text-xs">DC</TableHead>
-                      <TableHead className="text-xs">Status</TableHead>
-                      <TableHead className="text-xs">Utilization</TableHead>
-                      <TableHead className="text-xs">Temp</TableHead>
-                      <TableHead className="text-xs">Power</TableHead>
-                      <TableHead className="text-xs">Memory</TableHead>
-                      <TableHead className="text-xs">ECC</TableHead>
+                      <TableHead className="text-xs">{t('monitoring.tableId')}</TableHead>
+                      <TableHead className="text-xs">{t('monitoring.tableModel')}</TableHead>
+                      <TableHead className="text-xs">{t('monitoring.tableDc')}</TableHead>
+                      <TableHead className="text-xs">{t('monitoring.tableStatus')}</TableHead>
+                      <TableHead className="text-xs">{t('monitoring.tableUtilization')}</TableHead>
+                      <TableHead className="text-xs">{t('monitoring.tableTemp')}</TableHead>
+                      <TableHead className="text-xs">{t('monitoring.tablePower')}</TableHead>
+                      <TableHead className="text-xs">{t('monitoring.tableMemory')}</TableHead>
+                      <TableHead className="text-xs">{t('monitoring.tableEcc')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

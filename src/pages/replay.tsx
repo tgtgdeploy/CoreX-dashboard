@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import type { ReplayScenario, ReplayEvent, MetricPoint } from "@shared/schema";
 import { KpiStatCard } from "@/components/kpi-stat-card";
 import { HealthBadge } from "@/components/health-badge";
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { supabaseHeaders, apiBase } from "@/lib/queryClient";
 
 export default function Replay() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { data: scenarios = [] } = useQuery<ReplayScenario[]>({ queryKey: ["/api/replay/scenarios"] });
 
@@ -83,12 +85,12 @@ export default function Replay() {
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       <div className="flex items-center gap-3">
         <Film className="w-6 h-6 text-muted-foreground" />
-        <h1 className="text-xl sm:text-2xl font-display font-bold">Replay Mode</h1>
+        <h1 className="text-xl sm:text-2xl font-display font-bold">{t('replay.title')}</h1>
       </div>
 
       {!activeScenario ? (
         <div>
-          <p className="text-sm text-muted-foreground mb-4">Select a scenario to replay infrastructure events in real-time simulation.</p>
+          <p className="text-sm text-muted-foreground mb-4">{t('replay.selectScenario')}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {scenarios.map(s => (
               <Card
@@ -103,8 +105,8 @@ export default function Replay() {
                 <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{s.description}</p>
                 <div className="flex items-center justify-between">
                   <div className="flex gap-1">
-                    {s.tags.map(t => (
-                      <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground">{t}</span>
+                    {s.tags.map(tag => (
+                      <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground">{tag}</span>
                     ))}
                   </div>
                   <span className="text-[10px] text-muted-foreground">{s.durationMinutes}min</span>
@@ -134,7 +136,7 @@ export default function Replay() {
                   <span className="ml-1 text-xs">{speed}x</span>
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => { setActiveScenario(null); setPlaying(false); setElapsed(0); }}>
-                  Exit
+                  {t('common.exit')}
                 </Button>
               </div>
             </div>
@@ -153,20 +155,20 @@ export default function Replay() {
 
           {/* KPIs */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <KpiStatCard title="Elapsed" value={formatTime(elapsed)} icon={<Clock className="w-5 h-5 text-muted-foreground" />} />
-            <KpiStatCard title="Events" value={events.length} icon={<Zap className="w-5 h-5 text-amber-400" />} />
-            <KpiStatCard title="Speed" value={`${speed}x`} icon={<FastForward className="w-5 h-5 text-blue-400" />} />
-            <KpiStatCard title="Progress" value={`${Math.round((elapsed / durationSec) * 100)}%`} icon={<Activity className="w-5 h-5 text-emerald-400" />} />
+            <KpiStatCard title={t('replay.elapsed')} value={formatTime(elapsed)} icon={<Clock className="w-5 h-5 text-muted-foreground" />} />
+            <KpiStatCard title={t('replay.events')} value={events.length} icon={<Zap className="w-5 h-5 text-amber-400" />} />
+            <KpiStatCard title={t('replay.speed')} value={`${speed}x`} icon={<FastForward className="w-5 h-5 text-blue-400" />} />
+            <KpiStatCard title={t('replay.progress')} value={`${Math.round((elapsed / durationSec) * 100)}%`} icon={<Activity className="w-5 h-5 text-emerald-400" />} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {/* Metrics Charts */}
             <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4 lg:col-span-2">
-              <h3 className="text-sm font-medium mb-3">Live Metrics</h3>
+              <h3 className="text-sm font-medium mb-3">{t('replay.liveMetrics')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {metrics?.utilization && (
                   <div>
-                    <p className="text-xs text-muted-foreground mb-2">GPU Utilization %</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t('replay.gpuUtilizationPct')}</p>
                     <ResponsiveContainer width="100%" height={140}>
                       <AreaChart data={metrics.utilization}>
                         <XAxis dataKey="time" tick={false} axisLine={false} />
@@ -179,7 +181,7 @@ export default function Replay() {
                 )}
                 {metrics?.latency && (
                   <div>
-                    <p className="text-xs text-muted-foreground mb-2">Latency (ms)</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t('replay.latencyMs')}</p>
                     <ResponsiveContainer width="100%" height={140}>
                       <LineChart data={metrics.latency}>
                         <XAxis dataKey="time" tick={false} axisLine={false} />
@@ -192,7 +194,7 @@ export default function Replay() {
                 )}
                 {metrics?.queueDepth && (
                   <div>
-                    <p className="text-xs text-muted-foreground mb-2">Queue Depth</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t('replay.queueDepth')}</p>
                     <ResponsiveContainer width="100%" height={140}>
                       <AreaChart data={metrics.queueDepth}>
                         <XAxis dataKey="time" tick={false} axisLine={false} />
@@ -205,7 +207,7 @@ export default function Replay() {
                 )}
                 {metrics?.revenue && (
                   <div>
-                    <p className="text-xs text-muted-foreground mb-2">Revenue ($)</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t('replay.revenueDollar')}</p>
                     <ResponsiveContainer width="100%" height={140}>
                       <AreaChart data={metrics.revenue}>
                         <XAxis dataKey="time" tick={false} axisLine={false} />
@@ -221,7 +223,7 @@ export default function Replay() {
 
             {/* Events Feed */}
             <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4">
-              <h3 className="text-sm font-medium mb-3">Event Stream</h3>
+              <h3 className="text-sm font-medium mb-3">{t('replay.eventStream')}</h3>
               <ScrollArea className="h-[400px]">
                 <div className="space-y-2">
                   {events.map((e, i) => (
@@ -245,7 +247,7 @@ export default function Replay() {
                   ))}
                   {events.length === 0 && (
                     <p className="text-muted-foreground text-sm text-center py-8">
-                      Press play to start the scenario
+                      {t('replay.pressPlay')}
                     </p>
                   )}
                 </div>

@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { LogEntry } from "@shared/schema";
 import { Terminal, Filter } from "lucide-react";
 
@@ -25,6 +26,7 @@ export function LiveConsole({ logs }: { logs: LogEntry[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
   const [levelFilter, setLevelFilter] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (autoScroll && containerRef.current) {
@@ -39,10 +41,10 @@ export function LiveConsole({ logs }: { logs: LogEntry[] }) {
       <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-zinc-800 bg-zinc-950/50">
         <div className="flex items-center gap-2">
           <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-xs font-mono font-bold text-emerald-400 tracking-wider">SYSTEM CONSOLE</span>
+          <span className="text-xs font-mono font-bold text-emerald-400 tracking-wider">{t('console.systemConsole')}</span>
           <div className="flex items-center gap-1 ml-2">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] text-zinc-500 font-mono">LIVE</span>
+            <span className="text-[10px] text-zinc-500 font-mono">{t('common.live')}</span>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -85,7 +87,7 @@ export function LiveConsole({ logs }: { logs: LogEntry[] }) {
           </div>
         ))}
         {filtered.length === 0 && (
-          <div className="text-zinc-600 text-center py-4">No log entries matching filter</div>
+          <div className="text-zinc-600 text-center py-4">{t('console.noLogs')}</div>
         )}
       </div>
     </div>
