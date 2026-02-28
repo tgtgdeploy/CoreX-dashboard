@@ -50,15 +50,15 @@ export default function Jobs() {
         <KpiStatCard title={t('jobs.completed24h')} value={completed} icon={<CheckCircle2 className="w-5 h-5 text-muted-foreground" />} />
         <KpiStatCard title={t('jobs.failed24h')} value={failed} variant={failed > 0 ? "critical" : "default"} icon={<XCircle className="w-5 h-5 text-red-400" />} />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4 lg:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4 md:col-span-2">
           <Tabs value={tab} onValueChange={setTab}>
-            <TabsList className="mb-3">
-              <TabsTrigger value="all">{`${t('jobs.tabAll')} (${data.length})`}</TabsTrigger>
-              <TabsTrigger value="running">{t('jobs.tabRunning')}</TabsTrigger>
-              <TabsTrigger value="queued">{t('jobs.tabQueued')}</TabsTrigger>
-              <TabsTrigger value="completed">{t('jobs.tabDone')}</TabsTrigger>
-              <TabsTrigger value="failed">{t('jobs.tabFailed')}</TabsTrigger>
+            <TabsList className="mb-3 w-full justify-start overflow-x-auto">
+              <TabsTrigger value="all" className="shrink-0">{`${t('jobs.tabAll')} (${data.length})`}</TabsTrigger>
+              <TabsTrigger value="running" className="shrink-0">{t('jobs.tabRunning')}</TabsTrigger>
+              <TabsTrigger value="queued" className="shrink-0">{t('jobs.tabQueued')}</TabsTrigger>
+              <TabsTrigger value="completed" className="shrink-0">{t('jobs.tabDone')}</TabsTrigger>
+              <TabsTrigger value="failed" className="shrink-0">{t('jobs.tabFailed')}</TabsTrigger>
             </TabsList>
             <TabsContent value={tab}>
               <DataTable data={filtered} columns={columns} pageSize={12} onRowClick={setSelected} />
@@ -70,7 +70,7 @@ export default function Jobs() {
             {selected ? t('jobs.jobEvents', { id: selected.id }) : t('jobs.selectJob')}
           </h3>
           {selected ? (
-            <ScrollArea className="h-[400px]">
+            <ScrollArea className="h-[300px] md:h-[400px]">
               <div className="space-y-2">
                 <div className="text-xs space-y-1 mb-3">
                   <div className="flex justify-between"><span className="text-muted-foreground">{t('jobs.traceId')}</span><span className="font-mono">{selected.traceId}</span></div>
@@ -92,7 +92,7 @@ export default function Jobs() {
               </div>
             </ScrollArea>
           ) : (
-            <div className="flex items-center justify-center h-[400px] text-muted-foreground text-sm">
+            <div className="flex items-center justify-center h-[300px] md:h-[400px] text-muted-foreground text-sm">
               <Cpu className="w-8 h-8 mr-3 opacity-30" />
               {t('jobs.clickToInspect')}
             </div>

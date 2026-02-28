@@ -32,7 +32,7 @@ export default function Queues() {
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       <h1 className="text-xl sm:text-2xl font-display font-bold">{t('queues.title')}</h1>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <KpiStatCard title={t('queues.activeQueues')} value={data.filter(q => q.status === "active").length} icon={<Layers className="w-5 h-5 text-muted-foreground" />} />
         <KpiStatCard title={t('queues.totalPending')} value={totalPending} icon={<Clock className="w-5 h-5 text-amber-400" />} />
         <KpiStatCard title={t('queues.gpusAllocated')} value={totalUsed} subtitle={t('queues.ofQuota', { quota: totalQuota })} icon={<Cpu className="w-5 h-5 text-muted-foreground" />} />

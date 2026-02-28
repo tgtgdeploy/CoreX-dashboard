@@ -109,7 +109,7 @@ export default function Monitoring() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
         {isLoading ? (
           [...Array(5)].map((_, i) => (
             <Card key={i}>
@@ -188,24 +188,24 @@ export default function Monitoring() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList data-testid="tabs-monitoring" className="bg-zinc-900/50">
-          <TabsTrigger value="overview" data-testid="tab-overview">
-            <Eye className="w-3.5 h-3.5 mr-1.5" />{t('monitoring.tabOverview')}
+        <TabsList data-testid="tabs-monitoring" className="bg-zinc-900/50 w-full justify-start overflow-x-auto">
+          <TabsTrigger value="overview" data-testid="tab-overview" className="shrink-0">
+            <Eye className="w-3.5 h-3.5 sm:mr-1.5" /><span className="hidden sm:inline">{t('monitoring.tabOverview')}</span>
           </TabsTrigger>
-          <TabsTrigger value="heatmap" data-testid="tab-heatmap">
-            <Gauge className="w-3.5 h-3.5 mr-1.5" />{t('monitoring.tabGpuGrid')}
+          <TabsTrigger value="heatmap" data-testid="tab-heatmap" className="shrink-0">
+            <Gauge className="w-3.5 h-3.5 sm:mr-1.5" /><span className="hidden sm:inline">{t('monitoring.tabGpuGrid')}</span>
           </TabsTrigger>
-          <TabsTrigger value="charts" data-testid="tab-charts">
-            <Activity className="w-3.5 h-3.5 mr-1.5" />{t('monitoring.tabCharts')}
+          <TabsTrigger value="charts" data-testid="tab-charts" className="shrink-0">
+            <Activity className="w-3.5 h-3.5 sm:mr-1.5" /><span className="hidden sm:inline">{t('monitoring.tabCharts')}</span>
           </TabsTrigger>
-          <TabsTrigger value="gpus" data-testid="tab-gpus">
-            <Server className="w-3.5 h-3.5 mr-1.5" />{t('monitoring.tabFleetTable')}
+          <TabsTrigger value="gpus" data-testid="tab-gpus" className="shrink-0">
+            <Server className="w-3.5 h-3.5 sm:mr-1.5" /><span className="hidden sm:inline">{t('monitoring.tabFleetTable')}</span>
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-            <div className="lg:col-span-2 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="md:col-span-2 space-y-4">
               <Card className="bg-zinc-950/50 border-zinc-800/50">
                 <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
                   <CardTitle className="text-sm font-medium">{t('monitoring.gpusByRegion')}</CardTitle>
@@ -274,8 +274,8 @@ export default function Monitoring() {
                 </CardContent>
               </Card>
             </div>
-            <Card className="lg:col-span-3 bg-zinc-950 border-zinc-800/50 overflow-hidden">
-              <div className="h-[440px]">
+            <Card className="md:col-span-3 bg-zinc-950 border-zinc-800/50 overflow-hidden">
+              <div className="h-[300px] md:h-[440px]">
                 {isLoading ? (
                   <div className="p-4 space-y-2">
                     {[...Array(15)].map((_, i) => <Skeleton key={i} className="h-4 w-full" />)}
@@ -383,13 +383,13 @@ export default function Monitoring() {
                     <TableRow className="border-zinc-800">
                       <TableHead className="text-xs">{t('monitoring.tableId')}</TableHead>
                       <TableHead className="text-xs">{t('monitoring.tableModel')}</TableHead>
-                      <TableHead className="text-xs">{t('monitoring.tableDc')}</TableHead>
+                      <TableHead className="text-xs hidden md:table-cell">{t('monitoring.tableDc')}</TableHead>
                       <TableHead className="text-xs">{t('monitoring.tableStatus')}</TableHead>
                       <TableHead className="text-xs">{t('monitoring.tableUtilization')}</TableHead>
                       <TableHead className="text-xs">{t('monitoring.tableTemp')}</TableHead>
-                      <TableHead className="text-xs">{t('monitoring.tablePower')}</TableHead>
-                      <TableHead className="text-xs">{t('monitoring.tableMemory')}</TableHead>
-                      <TableHead className="text-xs">{t('monitoring.tableEcc')}</TableHead>
+                      <TableHead className="text-xs hidden md:table-cell">{t('monitoring.tablePower')}</TableHead>
+                      <TableHead className="text-xs hidden md:table-cell">{t('monitoring.tableMemory')}</TableHead>
+                      <TableHead className="text-xs hidden md:table-cell">{t('monitoring.tableEcc')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -406,7 +406,7 @@ export default function Monitoring() {
                         <TableRow key={gpu.id} data-testid={`gpu-row-${gpu.id}`} className="border-zinc-800/50">
                           <TableCell className="font-mono text-xs text-blue-400">{gpu.id}</TableCell>
                           <TableCell className="text-xs">{gpu.model}</TableCell>
-                          <TableCell className="text-xs truncate max-w-[120px]">{gpu.dcName.split(" (")[0]}</TableCell>
+                          <TableCell className="text-xs truncate max-w-[120px] hidden md:table-cell">{gpu.dcName.split(" (")[0]}</TableCell>
                           <TableCell>
                             <div className="flex items-center gap-1.5">
                               <StatusDot status={gpu.status} />
@@ -422,9 +422,9 @@ export default function Monitoring() {
                           <TableCell className={`text-xs font-mono ${gpu.temperature > 80 ? "text-red-400" : gpu.temperature > 70 ? "text-amber-400" : ""}`}>
                             {gpu.temperature}°C
                           </TableCell>
-                          <TableCell className="text-xs font-mono">{gpu.powerDraw}W</TableCell>
-                          <TableCell className="text-xs font-mono">{gpu.memoryUsedGb}/{gpu.memoryTotalGb}GB</TableCell>
-                          <TableCell className={`text-xs font-mono ${gpu.eccErrors > 0 ? "text-red-400" : "text-zinc-600"}`}>
+                          <TableCell className="text-xs font-mono hidden md:table-cell">{gpu.powerDraw}W</TableCell>
+                          <TableCell className="text-xs font-mono hidden md:table-cell">{gpu.memoryUsedGb}/{gpu.memoryTotalGb}GB</TableCell>
+                          <TableCell className={`text-xs font-mono hidden md:table-cell ${gpu.eccErrors > 0 ? "text-red-400" : "text-zinc-600"}`}>
                             {gpu.eccErrors > 0 ? gpu.eccErrors : "—"}
                           </TableCell>
                         </TableRow>

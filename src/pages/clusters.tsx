@@ -28,7 +28,7 @@ export default function Clusters() {
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       <h1 className="text-xl sm:text-2xl font-display font-bold">{t('clusters.title')}</h1>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <KpiStatCard title={t('clusters.totalClusters')} value={data.length} icon={<Network className="w-5 h-5 text-muted-foreground" />} />
         <KpiStatCard title={t('clusters.healthy')} value={healthy} variant="success" icon={<Server className="w-5 h-5 text-emerald-400" />} />
         <KpiStatCard title={t('clusters.degraded')} value={degraded} variant={degraded > 0 ? "warning" : "default"} icon={<Activity className="w-5 h-5 text-amber-400" />} />

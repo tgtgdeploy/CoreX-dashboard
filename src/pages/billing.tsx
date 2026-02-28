@@ -92,8 +92,8 @@ export default function Billing() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="md:col-span-2">
           <CardHeader className="px-4 pt-4 pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">{t('billing.monthlyRevenueTrend')}</CardTitle>
           </CardHeader>
@@ -203,12 +203,12 @@ export default function Billing() {
                 <TableRow>
                   <TableHead className="text-xs">{t('billing.tableInvoice')}</TableHead>
                   <TableHead className="text-xs">{t('billing.tableTenant')}</TableHead>
-                  <TableHead className="text-xs">{t('billing.tableTier')}</TableHead>
+                  <TableHead className="text-xs hidden md:table-cell">{t('billing.tableTier')}</TableHead>
                   <TableHead className="text-xs">{t('billing.tablePeriod')}</TableHead>
-                  <TableHead className="text-xs">{t('billing.tableGpuHours')}</TableHead>
+                  <TableHead className="text-xs hidden md:table-cell">{t('billing.tableGpuHours')}</TableHead>
                   <TableHead className="text-xs text-right">{t('billing.tableAmount')}</TableHead>
                   <TableHead className="text-xs">{t('billing.tableStatus')}</TableHead>
-                  <TableHead className="text-xs">{t('billing.tableDueDate')}</TableHead>
+                  <TableHead className="text-xs hidden md:table-cell">{t('billing.tableDueDate')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -225,14 +225,14 @@ export default function Billing() {
                     <TableRow key={record.id} data-testid={`invoice-row-${record.id}`}>
                       <TableCell className="font-mono text-xs">{record.id}</TableCell>
                       <TableCell className="text-xs">{record.tenantName}</TableCell>
-                      <TableCell>
+                      <TableCell className="hidden md:table-cell">
                         <Badge variant="outline" className="text-[10px] px-1.5 py-0 capitalize">{record.tier}</Badge>
                       </TableCell>
                       <TableCell className="text-xs font-mono">{record.period}</TableCell>
-                      <TableCell className="text-xs font-mono">{record.gpuHours.toLocaleString()}</TableCell>
+                      <TableCell className="text-xs font-mono hidden md:table-cell">{record.gpuHours.toLocaleString()}</TableCell>
                       <TableCell className="text-xs font-mono text-right">${record.amount.toLocaleString()}</TableCell>
                       <TableCell><StatusBadge status={record.status} /></TableCell>
-                      <TableCell className="text-xs">{record.dueDate}</TableCell>
+                      <TableCell className="text-xs hidden md:table-cell">{record.dueDate}</TableCell>
                     </TableRow>
                   ))
                 )}

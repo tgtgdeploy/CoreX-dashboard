@@ -34,10 +34,10 @@ export default function Incidents() {
         <KpiStatCard title={t('incidents.avgResolution')} value={`${avgMinutes}m`} icon={<Clock className="w-5 h-5 text-muted-foreground" />} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4 lg:col-span-1">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4 md:col-span-1">
           <h3 className="text-sm font-medium mb-3">{t('incidents.allIncidents')}</h3>
-          <ScrollArea className="h-[500px]">
+          <ScrollArea className="h-[350px] md:h-[500px]">
             <div className="space-y-2">
               {data.map(inc => (
                 <div
@@ -69,7 +69,7 @@ export default function Incidents() {
           </ScrollArea>
         </Card>
 
-        <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4 lg:col-span-2">
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4 md:col-span-2">
           {selected ? (
             <div>
               <div className="flex items-start justify-between mb-4">
@@ -103,7 +103,7 @@ export default function Incidents() {
               </div>
 
               <h4 className="text-sm font-medium mb-2">{t('incidents.timeline')}</h4>
-              <ScrollArea className="h-[350px]">
+              <ScrollArea className="h-[250px] md:h-[350px]">
                 <div className="space-y-3">
                   {selected.updates.map((u, i) => (
                     <div key={u.id || i} className="border-l-2 border-blue-500/50 pl-3 py-1">
@@ -120,7 +120,7 @@ export default function Incidents() {
               </ScrollArea>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-[500px] text-muted-foreground text-sm">
+            <div className="flex items-center justify-center h-[350px] md:h-[500px] text-muted-foreground text-sm">
               <AlertTriangle className="w-8 h-8 mr-3 opacity-30" />
               {t('incidents.selectIncident')}
             </div>

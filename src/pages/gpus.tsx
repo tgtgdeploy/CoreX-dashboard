@@ -46,7 +46,7 @@ export default function Gpus() {
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       <h1 className="text-xl sm:text-2xl font-display font-bold">{t('gpus.title')}</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
         <KpiStatCard title={t('gpus.totalGpus')} value={data.length} icon={<Cpu className="w-5 h-5 text-muted-foreground" />} />
         <KpiStatCard title={t('gpus.busy')} value={busy} icon={<Activity className="w-5 h-5 text-blue-400" />} />
         <KpiStatCard title={t('gpus.idle')} value={idle} icon={<Cpu className="w-5 h-5 text-slate-400" />} />
@@ -55,10 +55,10 @@ export default function Gpus() {
         <KpiStatCard title={t('gpus.avgTemp')} value={`${avgTemp}°C`} icon={<Thermometer className="w-5 h-5 text-muted-foreground" />} />
       </div>
       <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4">
-        <div className="flex flex-wrap gap-1.5 mb-4">
+        <div className="flex flex-nowrap gap-1.5 mb-4 overflow-x-auto">
           {FILTERS.map(f => (
             <button key={f} onClick={() => setFilter(f)}
-              className={cn("px-3 py-1 rounded-full text-xs font-mono uppercase transition-colors",
+              className={cn("px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-mono uppercase transition-colors shrink-0",
                 filter === f ? "bg-primary text-primary-foreground" : "bg-muted/50 text-muted-foreground hover:text-foreground"
               )}>
               {t(`gpus.filter_${f}`)} {f !== "all" ? `(${data.filter(g => g.status === f).length})` : `(${data.length})`}

@@ -47,7 +47,7 @@ function AlertCard({ alert }: { alert: Alert }) {
           )}
         </div>
         <p className="text-sm text-muted-foreground mt-1">{alert.message}</p>
-        <div className="flex items-center gap-4 mt-2 flex-wrap">
+        <div className="flex items-center gap-2 sm:gap-4 mt-2 flex-wrap">
           <div className="flex items-center gap-1">
             <Server className="w-3 h-3 text-muted-foreground" />
             <span className="text-[11px] text-muted-foreground font-mono">{alert.dcName}</span>
@@ -123,11 +123,11 @@ export default function Alerts() {
       </div>
 
       <Tabs defaultValue="all" className="space-y-4">
-        <TabsList data-testid="tabs-alerts">
-          <TabsTrigger value="all" data-testid="tab-all">{t('alerts.tabAll')} ({alerts?.length || 0})</TabsTrigger>
-          <TabsTrigger value="critical" data-testid="tab-critical">{t('alerts.tabCritical')} ({criticalAlerts.length})</TabsTrigger>
-          <TabsTrigger value="warning" data-testid="tab-warning">{t('alerts.tabWarning')} ({warningAlerts.length})</TabsTrigger>
-          <TabsTrigger value="info" data-testid="tab-info">{t('alerts.tabInfo')} ({infoAlerts.length})</TabsTrigger>
+        <TabsList data-testid="tabs-alerts" className="w-full justify-start overflow-x-auto">
+          <TabsTrigger value="all" data-testid="tab-all" className="shrink-0">{t('alerts.tabAll')} ({alerts?.length || 0})</TabsTrigger>
+          <TabsTrigger value="critical" data-testid="tab-critical" className="shrink-0">{t('alerts.tabCritical')} ({criticalAlerts.length})</TabsTrigger>
+          <TabsTrigger value="warning" data-testid="tab-warning" className="shrink-0">{t('alerts.tabWarning')} ({warningAlerts.length})</TabsTrigger>
+          <TabsTrigger value="info" data-testid="tab-info" className="shrink-0">{t('alerts.tabInfo')} ({infoAlerts.length})</TabsTrigger>
         </TabsList>
 
         {["all", "critical", "warning", "info"].map((tab) => {

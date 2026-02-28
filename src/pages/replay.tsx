@@ -8,10 +8,17 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, RotateCcw, FastForward, Film, Clock, Zap, Activity } from "lucide-react";
+import {
+  Play, Pause, RotateCcw, FastForward, Film, Clock, Zap, Activity,
+  Sun, TrendingUp, AlertTriangle, Wifi, UserPlus, Maximize2
+} from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { cn } from "@/lib/utils";
 import { supabaseHeaders, apiBase } from "@/lib/queryClient";
+
+const SCENARIO_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Sun, TrendingUp, AlertTriangle, Wifi, UserPlus, Maximize2,
+};
 
 export default function Replay() {
   const { t } = useTranslation();
@@ -100,7 +107,7 @@ export default function Replay() {
               >
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="font-medium text-sm">{s.name}</h3>
-                  <span className="text-lg">{s.icon}</span>
+                  {(() => { const ScenarioIcon = SCENARIO_ICONS[s.icon]; return ScenarioIcon ? <ScenarioIcon className="w-5 h-5 text-muted-foreground" /> : <span className="text-lg">{s.icon}</span>; })()}
                 </div>
                 <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{s.description}</p>
                 <div className="flex items-center justify-between">
@@ -124,7 +131,7 @@ export default function Replay() {
                 <h3 className="font-medium text-sm">{scenario?.name}</h3>
                 <p className="text-xs text-muted-foreground truncate">{scenario?.description}</p>
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
                 <Button size="sm" variant="outline" onClick={() => { setPlaying(!playing); }}>
                   {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                 </Button>
@@ -224,7 +231,7 @@ export default function Replay() {
             {/* Events Feed */}
             <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-4">
               <h3 className="text-sm font-medium mb-3">{t('replay.eventStream')}</h3>
-              <ScrollArea className="h-[400px]">
+              <ScrollArea className="h-[300px] md:h-[400px]">
                 <div className="space-y-2">
                   {events.map((e, i) => (
                     <div

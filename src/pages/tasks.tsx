@@ -167,17 +167,17 @@ export default function Tasks() {
       </div>
 
       <Tabs defaultValue="running" className="space-y-4">
-        <TabsList data-testid="tabs-tasks">
-          <TabsTrigger value="running" data-testid="tab-running">
+        <TabsList data-testid="tabs-tasks" className="w-full justify-start overflow-x-auto">
+          <TabsTrigger value="running" data-testid="tab-running" className="shrink-0">
             {t('tasks.tabRunning')} ({running.length})
           </TabsTrigger>
-          <TabsTrigger value="queued" data-testid="tab-queued">
+          <TabsTrigger value="queued" data-testid="tab-queued" className="shrink-0">
             {t('tasks.tabQueued')} ({queued.length})
           </TabsTrigger>
-          <TabsTrigger value="completed" data-testid="tab-completed">
+          <TabsTrigger value="completed" data-testid="tab-completed" className="shrink-0">
             {t('tasks.tabCompleted')} ({completed.length})
           </TabsTrigger>
-          <TabsTrigger value="failed" data-testid="tab-failed">
+          <TabsTrigger value="failed" data-testid="tab-failed" className="shrink-0">
             {t('tasks.tabFailed')} ({failed.length})
           </TabsTrigger>
         </TabsList>

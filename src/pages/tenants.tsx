@@ -33,7 +33,7 @@ export default function Tenants() {
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       <h1 className="text-xl sm:text-2xl font-display font-bold">{t('tenants.title')}</h1>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <KpiStatCard title={t('tenants.totalTenants')} value={data.length} icon={<Building2 className="w-5 h-5 text-muted-foreground" />} />
         <KpiStatCard title={t('tenants.enterprise')} value={enterprise} icon={<Users className="w-5 h-5 text-purple-400" />} />
         <KpiStatCard title={t('tenants.totalMrr')} value={`$${(totalMrr / 1000).toFixed(0)}K`} icon={<DollarSign className="w-5 h-5 text-emerald-400" />} />
