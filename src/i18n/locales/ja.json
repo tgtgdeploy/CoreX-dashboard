@@ -61,6 +61,7 @@
   "time.hours": "{{count}}時間",
   "time.days": "{{count}}日",
 
+  "heatmap.ariaGpuCell": "{{id}}: {{status}}, {{utilization}}% 使用率",
   "heatmap.util": "使用率:",
   "heatmap.error": "エラー",
   "heatmap.maint": "メンテナンス",
@@ -105,6 +106,7 @@
   "dashboard.failed24h": "失敗 (24時間)",
   "dashboard.recentAlerts": "最近のアラート",
   "dashboard.topTenantsByRevenue": "収益別トップテナント",
+  "dashboard.gpuCount": "{{count}} GPU",
   "dashboard.gpuHours": "{{hours}}時間 GPU",
 
   "monitoring.pageTitle": "GPUモニタリング | CoreX",
@@ -195,6 +197,11 @@
   "gpus.error": "エラー",
   "gpus.avgUtil": "平均使用率",
   "gpus.avgTemp": "平均温度",
+  "gpus.filter_all": "すべて",
+  "gpus.filter_busy": "使用中",
+  "gpus.filter_idle": "アイドル",
+  "gpus.filter_error": "エラー",
+  "gpus.filter_maintenance": "メンテナンス",
   "gpus.filterAll": "すべて",
   "gpus.filterBusy": "使用中",
   "gpus.filterIdle": "アイドル",
@@ -369,6 +376,7 @@
   "replay.queueDepth": "キュー深度",
   "replay.revenueDollar": "収益 ($)",
   "replay.eventStream": "イベントストリーム",
+  "replay.durationMin": "{{minutes}}分",
   "replay.pressPlay": "再生ボタンを押してシナリオを開始",
 
   "settings.title": "設定",
@@ -390,6 +398,8 @@
   "settings.endpointBase": "エンドポイント基本料金",
   "settings.overageRate": "超過料金",
   "settings.discounts": "割引",
+  "settings.perHour": "/時間",
+  "settings.perRequest": "/リクエスト",
   "settings.noPricingPlans": "料金プランが設定されていません",
 
   "notFound.title": "404 ページが見つかりません",

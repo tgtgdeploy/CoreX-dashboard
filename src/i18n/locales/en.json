@@ -61,6 +61,7 @@
   "time.hours": "{{count}}h",
   "time.days": "{{count}}d",
 
+  "heatmap.ariaGpuCell": "{{id}}: {{status}}, {{utilization}}% utilization",
   "heatmap.util": "Util:",
   "heatmap.error": "Error",
   "heatmap.maint": "Maint",
@@ -105,6 +106,7 @@
   "dashboard.failed24h": "Failed (24h)",
   "dashboard.recentAlerts": "Recent Alerts",
   "dashboard.topTenantsByRevenue": "Top Tenants by Revenue",
+  "dashboard.gpuCount": "{{count}} GPUs",
   "dashboard.gpuHours": "{{hours}}h GPU",
 
   "monitoring.pageTitle": "GPU Monitoring | CoreX",
@@ -195,6 +197,11 @@
   "gpus.error": "Error",
   "gpus.avgUtil": "Avg Util",
   "gpus.avgTemp": "Avg Temp",
+  "gpus.filter_all": "all",
+  "gpus.filter_busy": "busy",
+  "gpus.filter_idle": "idle",
+  "gpus.filter_error": "error",
+  "gpus.filter_maintenance": "maintenance",
   "gpus.filterAll": "all",
   "gpus.filterBusy": "busy",
   "gpus.filterIdle": "idle",
@@ -369,6 +376,7 @@
   "replay.queueDepth": "Queue Depth",
   "replay.revenueDollar": "Revenue ($)",
   "replay.eventStream": "Event Stream",
+  "replay.durationMin": "{{minutes}}min",
   "replay.pressPlay": "Press play to start the scenario",
 
   "settings.title": "Settings",
@@ -390,6 +398,8 @@
   "settings.endpointBase": "Endpoint Base",
   "settings.overageRate": "Overage Rate",
   "settings.discounts": "Discounts",
+  "settings.perHour": "/hr",
+  "settings.perRequest": "/req",
   "settings.noPricingPlans": "No pricing plans configured",
 
   "notFound.title": "404 Page Not Found",

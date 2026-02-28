@@ -61,6 +61,7 @@
   "time.hours": "{{count}}j",
   "time.days": "{{count}}h",
 
+  "heatmap.ariaGpuCell": "{{id}}: {{status}}, {{utilization}}% penggunaan",
   "heatmap.util": "Penggunaan:",
   "heatmap.error": "Ralat",
   "heatmap.maint": "Penyelenggaraan",
@@ -105,6 +106,7 @@
   "dashboard.failed24h": "Gagal (24j)",
   "dashboard.recentAlerts": "Amaran Terkini",
   "dashboard.topTenantsByRevenue": "Penyewa Teratas mengikut Hasil",
+  "dashboard.gpuCount": "{{count}} GPU",
   "dashboard.gpuHours": "{{hours}}j GPU",
 
   "monitoring.pageTitle": "Pemantauan GPU | CoreX",
@@ -195,6 +197,11 @@
   "gpus.error": "Ralat",
   "gpus.avgUtil": "Penggunaan Purata",
   "gpus.avgTemp": "Suhu Purata",
+  "gpus.filter_all": "semua",
+  "gpus.filter_busy": "sibuk",
+  "gpus.filter_idle": "melahu",
+  "gpus.filter_error": "ralat",
+  "gpus.filter_maintenance": "penyelenggaraan",
   "gpus.filterAll": "semua",
   "gpus.filterBusy": "sibuk",
   "gpus.filterIdle": "melahu",
@@ -369,6 +376,7 @@
   "replay.queueDepth": "Kedalaman Baris Gilir",
   "replay.revenueDollar": "Hasil ($)",
   "replay.eventStream": "Strim Peristiwa",
+  "replay.durationMin": "{{minutes}} min",
   "replay.pressPlay": "Tekan main untuk memulakan senario",
 
   "settings.title": "Tetapan",
@@ -390,6 +398,8 @@
   "settings.endpointBase": "Asas Titik Akhir",
   "settings.overageRate": "Kadar Lebihan",
   "settings.discounts": "Diskaun",
+  "settings.perHour": "/jam",
+  "settings.perRequest": "/permintaan",
   "settings.noPricingPlans": "Tiada pelan harga dikonfigurasikan",
 
   "notFound.title": "404 Halaman Tidak Ditemui",

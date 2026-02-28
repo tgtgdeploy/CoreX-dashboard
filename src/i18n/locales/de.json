@@ -61,6 +61,7 @@
   "time.hours": "{{count}}h",
   "time.days": "{{count}}d",
 
+  "heatmap.ariaGpuCell": "{{id}}: {{status}}, {{utilization}}% Auslastung",
   "heatmap.util": "Ausl.:",
   "heatmap.error": "Fehler",
   "heatmap.maint": "Wartung",
@@ -105,6 +106,7 @@
   "dashboard.failed24h": "Fehlgeschlagen (24h)",
   "dashboard.recentAlerts": "Neueste Warnungen",
   "dashboard.topTenantsByRevenue": "Top-Mandanten nach Umsatz",
+  "dashboard.gpuCount": "{{count}} GPUs",
   "dashboard.gpuHours": "{{hours}}h GPU",
 
   "monitoring.pageTitle": "GPU-Überwachung | CoreX",
@@ -195,6 +197,11 @@
   "gpus.error": "Fehler",
   "gpus.avgUtil": "Durchschn. Ausl.",
   "gpus.avgTemp": "Durchschn. Temp.",
+  "gpus.filter_all": "alle",
+  "gpus.filter_busy": "belegt",
+  "gpus.filter_idle": "frei",
+  "gpus.filter_error": "Fehler",
+  "gpus.filter_maintenance": "Wartung",
   "gpus.filterAll": "alle",
   "gpus.filterBusy": "beschäftigt",
   "gpus.filterIdle": "leerlauf",
@@ -369,6 +376,7 @@
   "replay.queueDepth": "Warteschlangentiefe",
   "replay.revenueDollar": "Umsatz ($)",
   "replay.eventStream": "Ereignis-Stream",
+  "replay.durationMin": "{{minutes}}Min",
   "replay.pressPlay": "Drücken Sie Play, um das Szenario zu starten",
 
   "settings.title": "Einstellungen",
@@ -390,6 +398,8 @@
   "settings.endpointBase": "Endpunkt-Basis",
   "settings.overageRate": "Überschreitungsrate",
   "settings.discounts": "Rabatte",
+  "settings.perHour": "/Std",
+  "settings.perRequest": "/Anf",
   "settings.noPricingPlans": "Keine Preispläne konfiguriert",
 
   "notFound.title": "404 Seite nicht gefunden",

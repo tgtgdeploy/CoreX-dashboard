@@ -260,7 +260,7 @@ export default function Dashboard() {
                       return (
                         <div className="bg-popover border border-popover-border rounded-md px-3 py-2 shadow-lg">
                           <p className="text-xs text-muted-foreground">{payload[0].name}</p>
-                          <p className="text-sm font-mono font-medium">{payload[0].value} GPUs</p>
+                          <p className="text-sm font-mono font-medium">{t('dashboard.gpuCount', { count: payload[0].value })}</p>
                         </div>
                       );
                     }}
@@ -336,7 +336,7 @@ export default function Dashboard() {
                     tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
                     axisLine={false} tickLine={false}
                   />
-                  <Tooltip content={<ChartTooltipContent formatter={(v: number) => `${v} GPUs`} />} />
+                  <Tooltip content={<ChartTooltipContent formatter={(v: number) => t('dashboard.gpuCount', { count: v })} />} />
                   <Bar dataKey="totalGpus" fill={CHART_COLORS[1]} radius={[0, 3, 3, 0]} />
                 </BarChart>
               </ResponsiveContainer>

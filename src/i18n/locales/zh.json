@@ -61,6 +61,7 @@
   "time.hours": "{{count}}小时",
   "time.days": "{{count}}天",
 
+  "heatmap.ariaGpuCell": "{{id}}: {{status}}, {{utilization}}% 利用率",
   "heatmap.util": "利用率：",
   "heatmap.error": "错误",
   "heatmap.maint": "维护",
@@ -105,6 +106,7 @@
   "dashboard.failed24h": "已失败（24小时）",
   "dashboard.recentAlerts": "最近告警",
   "dashboard.topTenantsByRevenue": "收入排名前列的租户",
+  "dashboard.gpuCount": "{{count}} 个GPU",
   "dashboard.gpuHours": "{{hours}}小时 GPU",
 
   "monitoring.pageTitle": "GPU 监控 | CoreX",
@@ -195,6 +197,11 @@
   "gpus.error": "错误",
   "gpus.avgUtil": "平均利用率",
   "gpus.avgTemp": "平均温度",
+  "gpus.filter_all": "全部",
+  "gpus.filter_busy": "繁忙",
+  "gpus.filter_idle": "空闲",
+  "gpus.filter_error": "错误",
+  "gpus.filter_maintenance": "维护",
   "gpus.filterAll": "全部",
   "gpus.filterBusy": "忙碌",
   "gpus.filterIdle": "空闲",
@@ -369,6 +376,7 @@
   "replay.queueDepth": "队列深度",
   "replay.revenueDollar": "收入（$）",
   "replay.eventStream": "事件流",
+  "replay.durationMin": "{{minutes}}分钟",
   "replay.pressPlay": "按播放键开始场景",
 
   "settings.title": "设置",
@@ -390,6 +398,8 @@
   "settings.endpointBase": "端点基础价",
   "settings.overageRate": "超额费率",
   "settings.discounts": "折扣",
+  "settings.perHour": "/小时",
+  "settings.perRequest": "/请求",
   "settings.noPricingPlans": "暂未配置定价方案",
 
   "notFound.title": "404 页面未找到",

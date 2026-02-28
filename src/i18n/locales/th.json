@@ -61,6 +61,7 @@
   "time.hours": "{{count}} ชม.",
   "time.days": "{{count}} วัน",
 
+  "heatmap.ariaGpuCell": "{{id}}: {{status}}, {{utilization}}% การใช้งาน",
   "heatmap.util": "ใช้งาน:",
   "heatmap.error": "ข้อผิดพลาด",
   "heatmap.maint": "บำรุงรักษา",
@@ -105,6 +106,7 @@
   "dashboard.failed24h": "ล้มเหลว (24 ชม.)",
   "dashboard.recentAlerts": "การแจ้งเตือนล่าสุด",
   "dashboard.topTenantsByRevenue": "ผู้เช่ายอดนิยมตามรายได้",
+  "dashboard.gpuCount": "{{count}} GPU",
   "dashboard.gpuHours": "{{hours}} ชม. GPU",
 
   "monitoring.pageTitle": "การตรวจสอบ GPU | CoreX",
@@ -195,6 +197,11 @@
   "gpus.error": "ข้อผิดพลาด",
   "gpus.avgUtil": "ใช้งานเฉลี่ย",
   "gpus.avgTemp": "อุณหภูมิเฉลี่ย",
+  "gpus.filter_all": "ทั้งหมด",
+  "gpus.filter_busy": "ใช้งานอยู่",
+  "gpus.filter_idle": "ว่าง",
+  "gpus.filter_error": "ข้อผิดพลาด",
+  "gpus.filter_maintenance": "บำรุงรักษา",
   "gpus.filterAll": "ทั้งหมด",
   "gpus.filterBusy": "ไม่ว่าง",
   "gpus.filterIdle": "ว่าง",
@@ -369,6 +376,7 @@
   "replay.queueDepth": "ความลึกคิว",
   "replay.revenueDollar": "รายได้ ($)",
   "replay.eventStream": "สตรีมเหตุการณ์",
+  "replay.durationMin": "{{minutes}}นาที",
   "replay.pressPlay": "กดเล่นเพื่อเริ่มสถานการณ์",
 
   "settings.title": "การตั้งค่า",
@@ -390,6 +398,8 @@
   "settings.endpointBase": "ฐานเอนด์พอยท์",
   "settings.overageRate": "อัตราส่วนเกิน",
   "settings.discounts": "ส่วนลด",
+  "settings.perHour": "/ชม.",
+  "settings.perRequest": "/คำขอ",
   "settings.noPricingPlans": "ยังไม่ได้กำหนดแผนราคา",
 
   "notFound.title": "404 ไม่พบหน้า",

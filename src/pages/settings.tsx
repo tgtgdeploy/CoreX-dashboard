@@ -93,11 +93,11 @@ export default function Settings() {
                   </div>
                   <div className="flex justify-between pt-2 border-t border-border/30">
                     <span className="text-muted-foreground">{t('settings.endpointBase')}</span>
-                    <span className="font-mono">${plan.rules.endpointBaseHourly.toFixed(2)}/hr</span>
+                    <span className="font-mono">${plan.rules.endpointBaseHourly.toFixed(2)}{t('settings.perHour')}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('settings.overageRate')}</span>
-                    <span className="font-mono">${plan.rules.requestOverageRate.toFixed(4)}/req</span>
+                    <span className="font-mono">${plan.rules.requestOverageRate.toFixed(4)}{t('settings.perRequest')}</span>
                   </div>
                   {plan.rules.discounts.length > 0 && (
                     <div className="pt-2 border-t border-border/30">

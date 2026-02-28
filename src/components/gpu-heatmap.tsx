@@ -35,7 +35,7 @@ export function GpuHeatmap({ gpus, dcFilter }: { gpus: GpuSummary[]; dcFilter?: 
             <TooltipTrigger asChild>
               <button
                 type="button"
-                aria-label={`${gpu.id}: ${gpu.status}, ${gpu.utilization}% utilization`}
+                aria-label={t('heatmap.ariaGpuCell', { id: gpu.id, status: gpu.status, utilization: gpu.utilization })}
                 className={`w-3.5 h-3.5 rounded-[2px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${getUtilColor(gpu.utilization, gpu.status)} ${getUtilBorder(gpu.utilization, gpu.status)}`}
                 data-testid={`heatmap-cell-${gpu.id}`}
               />

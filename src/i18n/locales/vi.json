@@ -61,6 +61,7 @@
   "time.hours": "{{count}} giờ",
   "time.days": "{{count}} ngày",
 
+  "heatmap.ariaGpuCell": "{{id}}: {{status}}, {{utilization}}% sử dụng",
   "heatmap.util": "Sử dụng:",
   "heatmap.error": "Lỗi",
   "heatmap.maint": "Bảo trì",
@@ -105,6 +106,7 @@
   "dashboard.failed24h": "Thất bại (24 giờ)",
   "dashboard.recentAlerts": "Cảnh báo gần đây",
   "dashboard.topTenantsByRevenue": "Khách hàng hàng đầu theo doanh thu",
+  "dashboard.gpuCount": "{{count}} GPU",
   "dashboard.gpuHours": "{{hours}} giờ GPU",
 
   "monitoring.pageTitle": "Giám sát GPU | CoreX",
@@ -195,6 +197,11 @@
   "gpus.error": "Lỗi",
   "gpus.avgUtil": "Sử dụng TB",
   "gpus.avgTemp": "Nhiệt độ TB",
+  "gpus.filter_all": "tất cả",
+  "gpus.filter_busy": "đang dùng",
+  "gpus.filter_idle": "rảnh",
+  "gpus.filter_error": "lỗi",
+  "gpus.filter_maintenance": "bảo trì",
   "gpus.filterAll": "tất cả",
   "gpus.filterBusy": "bận",
   "gpus.filterIdle": "nhàn rỗi",
@@ -369,6 +376,7 @@
   "replay.queueDepth": "Độ sâu hàng đợi",
   "replay.revenueDollar": "Doanh thu ($)",
   "replay.eventStream": "Luồng sự kiện",
+  "replay.durationMin": "{{minutes}} phút",
   "replay.pressPlay": "Nhấn phát để bắt đầu kịch bản",
 
   "settings.title": "Cài đặt",
@@ -390,6 +398,8 @@
   "settings.endpointBase": "Giá cơ bản điểm cuối",
   "settings.overageRate": "Phí vượt mức",
   "settings.discounts": "Giảm giá",
+  "settings.perHour": "/giờ",
+  "settings.perRequest": "/yêu cầu",
   "settings.noPricingPlans": "Chưa cấu hình bảng giá",
 
   "notFound.title": "404 Không tìm thấy trang",

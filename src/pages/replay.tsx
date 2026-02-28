@@ -109,7 +109,7 @@ export default function Replay() {
                       <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground">{tag}</span>
                     ))}
                   </div>
-                  <span className="text-[10px] text-muted-foreground">{s.durationMinutes}min</span>
+                  <span className="text-[10px] text-muted-foreground">{t('replay.durationMin', { minutes: s.durationMinutes })}</span>
                 </div>
               </Card>
             ))}
