@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Play, CheckCircle2, Clock, XCircle, Cpu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import dcHeroSrc from "@assets/dc-hero.png";
 
 export default function Jobs() {
   const { t } = useTranslation();
@@ -43,7 +44,21 @@ export default function Jobs() {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <h1 className="text-xl sm:text-2xl font-display font-bold">{t('jobs.title')}</h1>
+      {/* Hero Banner */}
+      <div className="relative rounded-xl overflow-hidden mb-2">
+        <img src={dcHeroSrc} alt="Infrastructure" className="w-full h-[120px] md:h-[160px] object-cover brightness-[0.3]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/90 via-zinc-950/60 to-transparent" />
+        <div className="absolute inset-0 flex items-center justify-between gap-4 px-6 md:px-8 flex-wrap hero-shimmer">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">{t('common.allSystemsOperational')}</span>
+            </div>
+            <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-white">{t('jobs.title')}</h1>
+            <p className="text-sm text-zinc-400 mt-0.5">{t('jobs.subtitle')}</p>
+          </div>
+        </div>
+      </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <KpiStatCard title={t('jobs.running')} value={running} variant="success" icon={<Play className="w-5 h-5 text-emerald-400" />} />
         <KpiStatCard title={t('jobs.queued')} value={queued} icon={<Clock className="w-5 h-5 text-amber-400" />} />

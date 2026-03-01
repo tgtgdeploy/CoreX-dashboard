@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertTriangle, Shield, Clock, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import dcAerialSrc from "@assets/dc-aerial.png";
 
 export default function Incidents() {
   const { t } = useTranslation();
@@ -26,7 +27,21 @@ export default function Incidents() {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <h1 className="text-xl sm:text-2xl font-display font-bold">{t('incidents.title')}</h1>
+      {/* Hero Banner */}
+      <div className="relative rounded-xl overflow-hidden mb-2">
+        <img src={dcAerialSrc} alt="Infrastructure" className="w-full h-[120px] md:h-[160px] object-cover brightness-[0.3]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/90 via-zinc-950/60 to-transparent" />
+        <div className="absolute inset-0 flex items-center justify-between gap-4 px-6 md:px-8 flex-wrap hero-shimmer">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">{t('common.allSystemsOperational')}</span>
+            </div>
+            <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-white">{t('incidents.title')}</h1>
+            <p className="text-sm text-zinc-400 mt-0.5">{t('incidents.subtitle')}</p>
+          </div>
+        </div>
+      </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <KpiStatCard title={t('incidents.active')} value={active} variant={active > 0 ? "critical" : "default"} icon={<AlertTriangle className="w-5 h-5 text-red-400" />} />
         <KpiStatCard title={t('incidents.critical')} value={critical} variant={critical > 0 ? "critical" : "default"} icon={<Shield className="w-5 h-5 text-red-500" />} />

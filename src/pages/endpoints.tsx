@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Globe, Activity, Clock, Zap } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { supabaseHeaders, apiBase } from "@/lib/queryClient";
+import dcHeroSrc from "@assets/dc-hero.png";
 
 export default function Endpoints() {
   const { t } = useTranslation();
@@ -27,7 +28,21 @@ export default function Endpoints() {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <h1 className="text-xl sm:text-2xl font-display font-bold">{t('endpoints.title')}</h1>
+      {/* Hero Banner */}
+      <div className="relative rounded-xl overflow-hidden mb-2">
+        <img src={dcHeroSrc} alt="Infrastructure" className="w-full h-[120px] md:h-[160px] object-cover brightness-[0.3]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/90 via-zinc-950/60 to-transparent" />
+        <div className="absolute inset-0 flex items-center justify-between gap-4 px-6 md:px-8 flex-wrap hero-shimmer">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">{t('common.allSystemsOperational')}</span>
+            </div>
+            <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-white">{t('endpoints.title')}</h1>
+            <p className="text-sm text-zinc-400 mt-0.5">{t('endpoints.subtitle')}</p>
+          </div>
+        </div>
+      </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <KpiStatCard title={t('endpoints.activeEndpoints')} value={running.length} subtitle={t('endpoints.ofTotal', { total: data.length })} icon={<Globe className="w-5 h-5 text-emerald-400" />} />
         <KpiStatCard title={t('endpoints.totalRps')} value={totalRps.toFixed(0)} icon={<Activity className="w-5 h-5 text-blue-400" />} />

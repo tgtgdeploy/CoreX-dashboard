@@ -15,6 +15,7 @@ import {
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import { cn } from "@/lib/utils";
 import { supabaseHeaders, apiBase } from "@/lib/queryClient";
+import dcHeroSrc from "@assets/dc-hero.png";
 
 const SCENARIO_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Sun, TrendingUp, AlertTriangle, Wifi, UserPlus, Maximize2,
@@ -90,9 +91,20 @@ export default function Replay() {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <div className="flex items-center gap-3">
-        <Film className="w-6 h-6 text-muted-foreground" />
-        <h1 className="text-xl sm:text-2xl font-display font-bold">{t('replay.title')}</h1>
+      {/* Hero Banner */}
+      <div className="relative rounded-xl overflow-hidden mb-2">
+        <img src={dcHeroSrc} alt="Infrastructure" className="w-full h-[120px] md:h-[160px] object-cover brightness-[0.3]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/90 via-zinc-950/60 to-transparent" />
+        <div className="absolute inset-0 flex items-center justify-between gap-4 px-6 md:px-8 flex-wrap hero-shimmer">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">{t('common.allSystemsOperational')}</span>
+            </div>
+            <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-white">{t('replay.title')}</h1>
+            <p className="text-sm text-zinc-400 mt-0.5">{t('replay.subtitle')}</p>
+          </div>
+        </div>
       </div>
 
       {!activeScenario ? (
