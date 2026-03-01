@@ -24,16 +24,19 @@ export function KpiStatCard({ title, value, subtitle, trend, trendLabel, icon, v
     critical: "border-red-500/30",
   }[variant];
 
+  const isVariant = variant !== "default";
+
   return (
     <Card className={cn(
       "relative overflow-hidden border bg-card/50 backdrop-blur-sm p-4 sm:p-5 transition-all hover:bg-card/70",
       borderColor,
+      isVariant && "cyber-corners",
       className
     )}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <p className="text-[11px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider truncate">{title}</p>
-          <p className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold mt-1 tracking-tight truncate">{value}</p>
+          <p className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold mt-1 tracking-tight truncate stat-value">{value}</p>
           {(trend !== undefined || subtitle) && (
             <div className="flex items-center gap-1.5 mt-1.5">
               {trend !== undefined && (
@@ -49,7 +52,10 @@ export function KpiStatCard({ title, value, subtitle, trend, trendLabel, icon, v
           )}
         </div>
         {icon && (
-          <div className="shrink-0 p-2 rounded-lg bg-muted/50">
+          <div className={cn(
+            "shrink-0 p-2 rounded-lg bg-muted/50",
+            isVariant && "shadow-[inset_0_0_12px_rgba(56,189,248,0.06)]"
+          )}>
             {icon}
           </div>
         )}

@@ -118,10 +118,13 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-[1600px] mx-auto">
-      <div className="relative rounded-xl overflow-hidden mb-2">
-        <img src={dcHeroSrc} alt="Infrastructure" className="w-full h-[120px] md:h-[160px] object-cover brightness-[0.3]" />
+      <div className="relative rounded-xl overflow-hidden mb-2 scan-line gradient-border floating-orbs">
+        <img src={dcHeroSrc} alt="Infrastructure" className="w-full h-[140px] md:h-[180px] object-cover brightness-[0.3]" />
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/90 via-zinc-950/60 to-transparent" />
-        <div className="absolute inset-0 flex items-center justify-between gap-4 px-6 md:px-8 flex-wrap">
+        <div className="absolute inset-0 tech-grid z-[1]" />
+        <div className="orb orb-1" />
+        <div className="orb orb-2" />
+        <div className="absolute inset-0 flex items-center justify-between gap-4 px-6 md:px-8 flex-wrap z-[2]">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -134,10 +137,11 @@ export default function Dashboard() {
               {t('dashboard.subtitle')}
             </p>
           </div>
-          <Badge variant="outline" className="font-mono text-xs border-zinc-600 text-zinc-300">
+          <Badge variant="outline" className="font-mono text-xs border-zinc-600 text-zinc-300 neon-border">
             {new Date().toLocaleTimeString()}
           </Badge>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-background to-transparent z-[3]" />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -186,7 +190,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 bg-zinc-950/60 border-zinc-800/60">
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2 px-4 pt-4">
             <CardTitle className="text-sm font-medium">{t('dashboard.gpuUtilization24h')}</CardTitle>
             <div className="flex items-center gap-2">
@@ -196,7 +200,7 @@ export default function Dashboard() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="px-2 pb-2">
+          <CardContent className="px-2 pb-2 tech-grid">
             {isLoading ? (
               <Skeleton className="h-[240px] w-full" />
             ) : (
@@ -233,11 +237,11 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-zinc-950/60 border-zinc-800/60">
           <CardHeader className="px-4 pt-4 pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">{t('dashboard.gpuFleetDistribution')}</CardTitle>
           </CardHeader>
-          <CardContent className="px-2 pb-2">
+          <CardContent className="px-2 pb-2 tech-grid">
             {isLoading ? (
               <Skeleton className="h-[240px] w-full" />
             ) : (
@@ -284,12 +288,12 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
+        <Card className="bg-zinc-950/60 border-zinc-800/60">
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
             <CardTitle className="text-sm font-medium">{t('dashboard.revenueTrend7d')}</CardTitle>
             <DollarSign className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent className="px-2 pb-2">
+          <CardContent className="px-2 pb-2 tech-grid">
             {isLoading ? (
               <Skeleton className="h-[200px] w-full" />
             ) : (
@@ -314,12 +318,12 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-zinc-950/60 border-zinc-800/60">
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
             <CardTitle className="text-sm font-medium">{t('dashboard.regionalPerformance')}</CardTitle>
             <Server className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent className="px-2 pb-2">
+          <CardContent className="px-2 pb-2 tech-grid">
             {isLoading ? (
               <Skeleton className="h-[200px] w-full" />
             ) : (
@@ -346,7 +350,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-1">
+        <Card className="lg:col-span-1 cyber-corners">
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-4 pb-2">
             <CardTitle className="text-sm font-medium">{t('dashboard.systemHealth')}</CardTitle>
             <Shield className="w-4 h-4 text-muted-foreground" />

@@ -286,6 +286,131 @@
   border-radius: inherit;
 }
 
+/* ── Scan Line — surveillance sweep across hero banners ── */
+@keyframes scan-sweep {
+  0%   { top: -4px; }
+  100% { top: 100%; }
+}
+.scan-line {
+  position: relative;
+  overflow: hidden;
+}
+.scan-line::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.07), rgba(34, 211, 238, 0.12), rgba(56, 189, 248, 0.07), transparent);
+  z-index: 2;
+  pointer-events: none;
+  animation: scan-sweep 4s linear infinite;
+}
+
+/* ── Tech Grid — subtle dot-grid overlay ── */
+.tech-grid {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* ── Neon Border Glow — pulsing blue/cyan shadow ── */
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 8px hsl(var(--primary) / 0.15), 0 0 20px hsl(var(--primary) / 0.06); }
+  50%      { box-shadow: 0 0 14px hsl(var(--primary) / 0.25), 0 0 30px hsl(var(--primary) / 0.10); }
+}
+.neon-border {
+  animation: neon-pulse 3s ease-in-out infinite;
+}
+
+/* ── Animated Gradient Border — rotating conic-gradient accent strip ── */
+@keyframes gradient-rotate {
+  from { --gradient-angle: 0deg; }
+  to   { --gradient-angle: 360deg; }
+}
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.gradient-border {
+  position: relative;
+}
+.gradient-border::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: conic-gradient(from var(--gradient-angle), transparent 25%, hsl(217 91% 60%), hsl(195 87% 55%), transparent 75%);
+  animation: gradient-rotate 3s linear infinite;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ── Cyber Corner Accents — L-shaped bracket marks ── */
+.cyber-corners {
+  position: relative;
+}
+.cyber-corners::before,
+.cyber-corners::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  z-index: 2;
+}
+.cyber-corners::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid hsl(195 87% 55% / 0.45);
+  border-left: 2px solid hsl(195 87% 55% / 0.45);
+}
+.cyber-corners::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid hsl(195 87% 55% / 0.45);
+  border-right: 2px solid hsl(195 87% 55% / 0.45);
+}
+
+/* ── Floating Orbs — subtle drifting depth orbs ── */
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(30px, -20px); }
+}
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(-25px, 15px); }
+}
+.floating-orbs {
+  position: relative;
+  overflow: hidden;
+}
+.floating-orbs .orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+.floating-orbs .orb-1 {
+  width: 180px;
+  height: 180px;
+  top: -40px;
+  right: 15%;
+  background: radial-gradient(circle, hsl(217 91% 60% / 0.05), transparent 70%);
+  animation: orb-drift-1 20s ease-in-out infinite alternate;
+}
+.floating-orbs .orb-2 {
+  width: 120px;
+  height: 120px;
+  bottom: -20px;
+  left: 25%;
+  background: radial-gradient(circle, hsl(195 87% 55% / 0.04), transparent 70%);
+  animation: orb-drift-2 15s ease-in-out infinite alternate;
+}
+
 /* ── Mobile touch feedback ── */
 @media (max-width: 768px) {
   .nav-btn:active {

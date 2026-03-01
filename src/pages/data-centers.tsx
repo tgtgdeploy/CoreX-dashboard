@@ -48,10 +48,11 @@ export default function DataCenters() {
 
   return (
     <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-[1600px] mx-auto">
-      <div className="relative rounded-xl overflow-hidden mb-2">
-        <img src={dcAerialSrc} alt="Data Center Facility" className="w-full h-[120px] md:h-[150px] object-cover brightness-[0.3]" />
+      <div className="relative rounded-xl overflow-hidden mb-2 scan-line gradient-border">
+        <img src={dcAerialSrc} alt="Data Center Facility" className="w-full h-[140px] md:h-[180px] object-cover brightness-[0.3]" />
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/90 via-zinc-950/60 to-transparent" />
-        <div className="absolute inset-0 flex items-center px-6 md:px-8">
+        <div className="absolute inset-0 tech-grid z-[1]" />
+        <div className="absolute inset-0 flex items-center px-6 md:px-8 z-[2]">
           <div>
             <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight text-white" data-testid="text-page-title">
               {t('dataCenters.title')}
@@ -61,6 +62,7 @@ export default function DataCenters() {
             </p>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-background to-transparent z-[3]" />
       </div>
 
       {isLoading ? (

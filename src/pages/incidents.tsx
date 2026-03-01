@@ -28,10 +28,11 @@ export default function Incidents() {
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       {/* Hero Banner */}
-      <div className="relative rounded-xl overflow-hidden mb-2">
-        <img src={dcAerialSrc} alt="Infrastructure" className="w-full h-[120px] md:h-[160px] object-cover brightness-[0.3]" />
+      <div className="relative rounded-xl overflow-hidden mb-2 scan-line gradient-border">
+        <img src={dcAerialSrc} alt="Infrastructure" className="w-full h-[140px] md:h-[180px] object-cover brightness-[0.3]" />
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/90 via-zinc-950/60 to-transparent" />
-        <div className="absolute inset-0 flex items-center justify-between gap-4 px-6 md:px-8 flex-wrap hero-shimmer">
+        <div className="absolute inset-0 tech-grid z-[1]" />
+        <div className="absolute inset-0 flex items-center justify-between gap-4 px-6 md:px-8 flex-wrap hero-shimmer z-[2]">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -41,6 +42,7 @@ export default function Incidents() {
             <p className="text-sm text-zinc-400 mt-0.5">{t('incidents.subtitle')}</p>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-background to-transparent z-[3]" />
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <KpiStatCard title={t('incidents.active')} value={active} variant={active > 0 ? "critical" : "default"} icon={<AlertTriangle className="w-5 h-5 text-red-400" />} />
