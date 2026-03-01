@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Server, Network, HardDrive, Cpu, CalendarClock,
   ListTodo, Layers, ShieldCheck, Globe, Building2, CreditCard,
   Bell, AlertOctagon, Play, Settings, ChevronRight, ChevronDown,
-  Activity, Terminal
+  Activity, Terminal, LogOut
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup,
@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useAuth } from "@/contexts/auth-context";
 import type { Alert } from "@shared/schema";
 import logoSrc from "@assets/photo_2026-02-15_10-10-27_1772231713455.jpg";
 
@@ -30,64 +31,66 @@ interface NavItem {
 export function AppSidebar() {
   const [location] = useLocation();
   const { t } = useTranslation();
+  const { user, logout } = useAuth();
+  const [, navigate] = useLocation();
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set(["Scheduler"]));
 
   const navSections: { labelKey: string; items: NavItem[] }[] = [
     {
       labelKey: "nav.overview",
       items: [
-        { titleKey: "nav.dashboard", url: "/", icon: LayoutDashboard },
+        { titleKey: "nav.dashboard", url: "/dashboard", icon: LayoutDashboard },
       ],
     },
     {
       labelKey: "nav.infrastructure",
       items: [
-        { titleKey: "nav.dataCenters", url: "/data-centers", icon: Server },
-        { titleKey: "nav.clusters", url: "/clusters", icon: Network },
-        { titleKey: "nav.nodes", url: "/nodes", icon: HardDrive },
-        { titleKey: "nav.gpus", url: "/gpus", icon: Cpu },
+        { titleKey: "nav.dataCenters", url: "/dashboard/data-centers", icon: Server },
+        { titleKey: "nav.clusters", url: "/dashboard/clusters", icon: Network },
+        { titleKey: "nav.nodes", url: "/dashboard/nodes", icon: HardDrive },
+        { titleKey: "nav.gpus", url: "/dashboard/gpus", icon: Cpu },
       ],
     },
     {
       labelKey: "nav.compute",
       items: [
         {
-          titleKey: "nav.scheduler", url: "/jobs", icon: CalendarClock,
+          titleKey: "nav.scheduler", url: "/dashboard/jobs", icon: CalendarClock,
           children: [
-            { titleKey: "nav.jobs", url: "/jobs" },
-            { titleKey: "nav.queues", url: "/queues" },
-            { titleKey: "nav.policies", url: "/policies" },
+            { titleKey: "nav.jobs", url: "/dashboard/jobs" },
+            { titleKey: "nav.queues", url: "/dashboard/queues" },
+            { titleKey: "nav.policies", url: "/dashboard/policies" },
           ],
         },
-        { titleKey: "nav.endpoints", url: "/endpoints", icon: Globe },
+        { titleKey: "nav.endpoints", url: "/dashboard/endpoints", icon: Globe },
       ],
     },
     {
       labelKey: "nav.business",
       items: [
-        { titleKey: "nav.tenants", url: "/tenants", icon: Building2 },
-        { titleKey: "nav.billing", url: "/billing", icon: CreditCard },
+        { titleKey: "nav.tenants", url: "/dashboard/tenants", icon: Building2 },
+        { titleKey: "nav.billing", url: "/dashboard/billing", icon: CreditCard },
       ],
     },
     {
       labelKey: "nav.observability",
       items: [
-        { titleKey: "nav.monitoring", url: "/monitoring", icon: Activity },
-        { titleKey: "nav.console", url: "/console", icon: Terminal },
+        { titleKey: "nav.monitoring", url: "/dashboard/monitoring", icon: Activity },
+        { titleKey: "nav.console", url: "/dashboard/console", icon: Terminal },
       ],
     },
     {
       labelKey: "nav.operations",
       items: [
-        { titleKey: "nav.alerts", url: "/alerts", icon: Bell },
-        { titleKey: "nav.incidents", url: "/incidents", icon: AlertOctagon },
-        { titleKey: "nav.replay", url: "/replay", icon: Play },
+        { titleKey: "nav.alerts", url: "/dashboard/alerts", icon: Bell },
+        { titleKey: "nav.incidents", url: "/dashboard/incidents", icon: AlertOctagon },
+        { titleKey: "nav.replay", url: "/dashboard/replay", icon: Play },
       ],
     },
     {
       labelKey: "nav.system",
       items: [
-        { titleKey: "nav.settings", url: "/settings", icon: Settings },
+        { titleKey: "nav.settings", url: "/dashboard/settings", icon: Settings },
       ],
     },
   ];
@@ -107,12 +110,17 @@ export function AppSidebar() {
     });
   };
 
-  const isActive = (url: string) => url === "/" ? location === "/" : location.startsWith(url);
+  const isActive = (url: string) => url === "/dashboard" ? location === "/dashboard" : location.startsWith(url);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <Sidebar>
       <SidebarHeader className="p-4 border-b border-sidebar-border">
-        <Link href="/">
+        <Link href="/dashboard">
           <div className="flex items-center gap-3 group/logo">
             <div className="relative">
               <img src={logoSrc} alt="CoreX" className="w-9 h-9 rounded-xl object-cover ring-2 ring-primary/20 transition-all duration-300 group-hover/logo:ring-primary/40 group-hover/logo:scale-105" />
@@ -248,6 +256,24 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4 border-t border-sidebar-border">
+        {user && (
+          <div className="flex items-center gap-3 px-1 mb-3">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary text-sm font-semibold">
+              {user.name.charAt(0).toUpperCase()}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{user.name}</p>
+              <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center w-8 h-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
+              title={t("auth.signOut")}
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        )}
         <div className="flex items-center gap-2.5 px-1">
           <div className="relative flex items-center justify-center">
             <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 opacity-30" />

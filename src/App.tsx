@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeProvider, useTheme } from "@/components/theme-provider";
+import { AuthProvider } from "@/contexts/auth-context";
+import { ProtectedRoute } from "@/components/protected-route";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useTranslation } from "react-i18next";
@@ -32,29 +34,31 @@ import Incidents from "@/pages/incidents";
 import Replay from "@/pages/replay";
 import Settings from "@/pages/settings";
 import Console from "@/pages/console";
+import LandingPage from "@/pages/landing";
+import LoginPage from "@/pages/login";
 import { Link } from "wouter";
 
-function Router() {
+function DashboardRouter() {
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/data-centers" component={DataCenters} />
-      <Route path="/clusters" component={Clusters} />
-      <Route path="/nodes" component={Nodes} />
-      <Route path="/gpus" component={Gpus} />
-      <Route path="/monitoring" component={Monitoring} />
-      <Route path="/jobs" component={Jobs} />
-      <Route path="/queues" component={Queues} />
-      <Route path="/policies" component={Policies} />
-      <Route path="/tasks" component={Tasks} />
-      <Route path="/endpoints" component={Endpoints} />
-      <Route path="/tenants" component={Tenants} />
-      <Route path="/billing" component={Billing} />
-      <Route path="/alerts" component={Alerts} />
-      <Route path="/incidents" component={Incidents} />
-      <Route path="/replay" component={Replay} />
-      <Route path="/console" component={Console} />
-      <Route path="/settings" component={Settings} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard/data-centers" component={DataCenters} />
+      <Route path="/dashboard/clusters" component={Clusters} />
+      <Route path="/dashboard/nodes" component={Nodes} />
+      <Route path="/dashboard/gpus" component={Gpus} />
+      <Route path="/dashboard/monitoring" component={Monitoring} />
+      <Route path="/dashboard/jobs" component={Jobs} />
+      <Route path="/dashboard/queues" component={Queues} />
+      <Route path="/dashboard/policies" component={Policies} />
+      <Route path="/dashboard/tasks" component={Tasks} />
+      <Route path="/dashboard/endpoints" component={Endpoints} />
+      <Route path="/dashboard/tenants" component={Tenants} />
+      <Route path="/dashboard/billing" component={Billing} />
+      <Route path="/dashboard/alerts" component={Alerts} />
+      <Route path="/dashboard/incidents" component={Incidents} />
+      <Route path="/dashboard/replay" component={Replay} />
+      <Route path="/dashboard/console" component={Console} />
+      <Route path="/dashboard/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -76,17 +80,17 @@ function ThemeToggle() {
 }
 
 const mobileNavItems = [
-  { icon: LayoutDashboard, labelKey: "mobile.home", url: "/" },
-  { icon: Activity, labelKey: "mobile.monitor", url: "/monitoring" },
-  { icon: Cpu, labelKey: "mobile.gpus", url: "/gpus" },
-  { icon: Server, labelKey: "mobile.infra", url: "/data-centers" },
-  { icon: Bell, labelKey: "mobile.alerts", url: "/alerts" },
+  { icon: LayoutDashboard, labelKey: "mobile.home", url: "/dashboard" },
+  { icon: Activity, labelKey: "mobile.monitor", url: "/dashboard/monitoring" },
+  { icon: Cpu, labelKey: "mobile.gpus", url: "/dashboard/gpus" },
+  { icon: Server, labelKey: "mobile.infra", url: "/dashboard/data-centers" },
+  { icon: Bell, labelKey: "mobile.alerts", url: "/dashboard/alerts" },
 ];
 
 function MobileBottomNav() {
   const [location] = useLocation();
   const { t } = useTranslation();
-  const isActive = (url: string) => url === "/" ? location === "/" : location.startsWith(url);
+  const isActive = (url: string) => url === "/dashboard" ? location === "/dashboard" : location.startsWith(url);
 
   return (
     <nav className="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-t border-border/50 safe-area-bottom">
@@ -132,39 +136,41 @@ function AppLayout() {
   };
 
   return (
-    <SidebarProvider style={style as React.CSSProperties}>
-      <div className="flex h-screen w-full">
-        <AppSidebar />
-        <div className="flex flex-col flex-1 min-w-0">
-          <header className="flex items-center justify-between gap-2 px-3 md:px-4 py-2 border-b border-border/50 bg-background/80 backdrop-blur-xl sticky top-0 z-50">
-            <div className="flex items-center gap-2">
-              <SidebarTrigger data-testid="button-sidebar-toggle" className="h-8 w-8 rounded-lg" />
-              <div className="h-4 w-px bg-border/50 hidden sm:block" />
-              <span className="text-[11px] text-muted-foreground/60 font-mono hidden sm:block">v2.4.1</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <button className="hidden md:flex items-center gap-2 h-8 px-3 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/50 transition-colors text-muted-foreground text-xs">
-                <Search className="w-3.5 h-3.5" />
-                <span className="hidden lg:inline">{t('common.search')}</span>
-                <kbd className="hidden lg:inline-flex h-5 items-center gap-0.5 rounded border border-border/50 bg-background/80 px-1.5 text-[10px] font-mono text-muted-foreground/60">
-                  <Command className="w-2.5 h-2.5" />K
-                </kbd>
-              </button>
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-500/8 border border-emerald-500/10">
-                <div className="w-1.5 h-1.5 rounded-full bg-status-online glow-online" />
-                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-medium tracking-wider">{t('common.live')}</span>
+    <ProtectedRoute>
+      <SidebarProvider style={style as React.CSSProperties}>
+        <div className="flex h-screen w-full">
+          <AppSidebar />
+          <div className="flex flex-col flex-1 min-w-0">
+            <header className="flex items-center justify-between gap-2 px-3 md:px-4 py-2 border-b border-border/50 bg-background/80 backdrop-blur-xl sticky top-0 z-50">
+              <div className="flex items-center gap-2">
+                <SidebarTrigger data-testid="button-sidebar-toggle" className="h-8 w-8 rounded-lg" />
+                <div className="h-4 w-px bg-border/50 hidden sm:block" />
+                <span className="text-[11px] text-muted-foreground/60 font-mono hidden sm:block">v2.4.1</span>
               </div>
-              <LanguageSwitcher />
-              <ThemeToggle />
-            </div>
-          </header>
-          <main className="flex-1 overflow-auto pb-16 md:pb-0">
-            <Router />
-          </main>
+              <div className="flex items-center gap-1.5">
+                <button className="hidden md:flex items-center gap-2 h-8 px-3 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/50 transition-colors text-muted-foreground text-xs">
+                  <Search className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">{t('common.search')}</span>
+                  <kbd className="hidden lg:inline-flex h-5 items-center gap-0.5 rounded border border-border/50 bg-background/80 px-1.5 text-[10px] font-mono text-muted-foreground/60">
+                    <Command className="w-2.5 h-2.5" />K
+                  </kbd>
+                </button>
+                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-500/8 border border-emerald-500/10">
+                  <div className="w-1.5 h-1.5 rounded-full bg-status-online glow-online" />
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-medium tracking-wider">{t('common.live')}</span>
+                </div>
+                <LanguageSwitcher />
+                <ThemeToggle />
+              </div>
+            </header>
+            <main className="flex-1 overflow-auto pb-16 md:pb-0">
+              <DashboardRouter />
+            </main>
+          </div>
         </div>
-      </div>
-      <MobileBottomNav />
-    </SidebarProvider>
+        <MobileBottomNav />
+      </SidebarProvider>
+    </ProtectedRoute>
   );
 }
 
@@ -173,8 +179,16 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ThemeProvider>
-          <AppLayout />
-          <Toaster />
+          <AuthProvider>
+            <Switch>
+              <Route path="/" component={LandingPage} />
+              <Route path="/login" component={LoginPage} />
+              <Route>
+                <AppLayout />
+              </Route>
+            </Switch>
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>
