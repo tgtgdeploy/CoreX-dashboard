@@ -3,6 +3,8 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import fs from "fs";
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 // Cloudflare Pages SPA: copy index.html → 404.html so unknown paths get the SPA shell
 function spa404Plugin(): Plugin {
   return {
@@ -17,7 +19,7 @@ function spa404Plugin(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), spa404Plugin()],
+  plugins: [react(), spa404Plugin(), cloudflare()],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "src"),
